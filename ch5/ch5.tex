@@ -1,0 +1,803 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % use normalem to protect \emph
+\newcommand\hl{\bgroup\markoverwith
+  {\textcolor{yellow}{\rule[-.5ex]{2pt}{2.5ex}}}\ULon}
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+\newtheorem{theorem}{\hspace{2em}定理}[section]
+\newtheorem{definition}{\hspace{2em}定义}[section]
+\newtheorem{corollary}{\hspace{2em}推论}[section]
+\newtheorem{proof}{\hspace{2em}证明}[section]
+
+\begin{document}
+    \section{传统密码不适合计算机网络时代}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 进入计算机网络时代, 传统密码逐渐暴露出其固有弱点:
+        [1] 要求通信双方利用安全信道进行密钥K的预先通信, 在实际应用中是非常困难的.
+
+        [2] 要求不同用户间约定不同的密钥, 若网络上有n个用户, 则需要
+        $$C_n^2=\frac{n(n-1)}{2}$$
+        如果$n=1000$, 则$C_{1000}^2=500000$.这给密钥的管理和更换带来十分繁重的工作.
+
+        [3] 每个用户必须记下与其他n-1个用户通信所用的密钥, 由于数量巨大, 只能记录在本子上或存储在计算机内存或外存上, 是极不安全的.
+        \item 鉴于传统密码在密钥分配与管理上的困难等原因, DH提出了公钥密码体制的思想.
+    \end{itemize}
+
+    \section{公钥密码体制}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 公钥密码体制将加密密钥和解密密钥公开, 并将加密密钥公开, 解密密钥保密. 每个用户拥有两个密钥: 公开钥(公钥)和私秘钥(私钥), 所有公开钥军备局路在类似电话本的密码本中.
+        \item 公开密码思想: 每个用户有一个加密用的密钥$k_e$, 还有一个解密用的密钥$k_d$, 将$k_e$公开, $k_d$保密, 且公开$k_e$不会影响$k_d$的安全. 可将个用户的$k_e$集中成公钥文件, 像电话本一样公开发给所有用户.
+        \item 若A与B保密通信, 查公钥文件得到B的加密用公钥$k^{(B)}_e$, 对信息加密如下:
+        $$c=E_{k^{(B)}_e}(m)$$
+
+        将c传给B, B用其私钥$k^{(b)}_d$解密密文c得到明文m:
+        $$m=D_{k^{(B)}_d}(c)$$
+
+        \item 公钥密码体制的\hl{安全性}体现在: 即使得到公开钥和加密算法以及密文, 也无法求出明文和私秘钥
+        \item 非对称密码
+    \end{itemize}
+
+    \section{公钥密码体制原理}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item $E_B, D_B$满足以下三个条件:
+
+        [1] $D_B$是$E_B$的\hl{逆变换}, 即$\forall m\in M\mbox{明文空间}$, 均有:
+        $$D_B(c)=D_B[E_B(m)]=m$$
+
+        [2] 在已知B的公开钥和私秘钥的条件下, $E_B$和$D_B$均是多项式时间的确定性算法.
+
+        [3] 对$\forall m\in M$, 找到算法$D^*_B$, 使得$D^*_B[E_B(m)]=m$是非常困难的
+
+        \item 公钥密码体制无法提供无条件的安全性.
+    \end{itemize}
+
+    \section{计算复杂性理论}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 计算复杂性理论是分析密码技术的\hl{计算要求}和研究破译密码\hl{固有难度}的基础.
+    \end{itemize}
+
+    \subsection{算法复杂性}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 算法的计算复杂性使用该算法所需的\hl{计算时间(T)}和\hl{存储空间(S)}要求来度量的.
+        \item 当给定一个特定问题的求解算法后, 执行这个算法的计算时间要求和存储空间要求也随之确定. 通常把\hl{计算时间}和\hl{存储空间}进行抽象, 以该实例所需输入数据的长度n的函数$f(n)$来表示, 则n越大, 所需花费的时间代价和空间代价$f(n)$也越大.
+        \item $f(n)$通常表示为形如$O[g(n)]$的"量级"函数, 并称为"大O"表示法.
+        \item $f(n)=O[g(n)]$表示存在满足下面要求的常数c和$n_0$
+        $$
+        f(n)\le c|g(n)|, \mbox{当}n\ge n_0
+        $$
+    \end{itemize}
+
+    \subsection{问题复杂性和NP完全问题}
+    \begin{enumerate}
+        \item P-问题
+
+        如果一个问题已经找到了一个多项式算法, 就称这个问题为一个\hl{P-问题}, 或者说属于P类.
+
+        \item 确定性或非确定性问题
+        \begin{itemize}
+            \item 若一个算法中每一步计算中, 下一步是唯一的, 称该算法是\hl{确定性}的.
+            \item 若一个算法, 在它的某一计算步骤必须从有限个可选项中选出一个作为下一步, 则称该算法是\hl{非确定性的}.
+            \item 属于P-类的算法都是确定性的, 且执行时间是多项式时间.
+        \end{itemize}
+
+        \item NP-问题
+        \begin{itemize}
+            \item \hl{NP-问题}即不确定性多项式类, 指用非确定性算法在多项式时间内可以解决的问题.
+        \end{itemize}
+
+        \item NP完全问题
+        \begin{itemize}
+            \item \hl{NP完全问题(或称NPC问题)}即不确定性多项式类, 指用非确定性算法不能在多项式时间内解决的问题
+            \item 设x是一个给定的问题, 如果对于$\forall x' \in NP, \mbox{均有}x'\in x, \mbox{则称}x\mbox{是困难问题}, \mbox{且}x\in NP, \mbox{则}x\mbox{称为}NP\mbox{完全问题或}NPC\mbox{问题}$
+            \item NPC问题是NP问题中\hl{最困难的问题}.
+            \item 目前有数百个问题被证明是NP完全问题. NP完全问题的发现为人们提供了一种判定一种问题是"难问题"的标准.
+            \item 结论: 在现代密码中, 一个密码系统的破译常常可以归结为求解某个数学问题, 数学问题的算法求解复杂性可通过计算复杂性理论来描述.
+
+            [1] 计算复杂性理论为破译密码的计算复杂都提供了实际的度量方法
+            [2] 计算复杂性理论中的一些典型的数学问题给人们提供了设计实用安全的高强度密码系统的基础(例如背包公开钥密码系统, RSA公开钥密码系统)
+        \end{itemize}
+    \end{enumerate}
+
+    \section{数论}
+    \subsection{欧几里得算法}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 欧几里得算法即"辗转相除法". 利用该算法可以迅速地找出给定的两个整数a和b地最大公因数(a,b), 并判断a和b是否互素.
+        \item 当$(a,b)=1$时,利用欧几里得算法可以找到两个常数u和v, 使得
+        $$ua+vb=1$$
+        可得$ua\equiv 1(\bmod b), vb\equiv 1(\bmod a)$
+        于是u是a模b的乘法逆, v是b模a的乘法逆.
+        \item 在IDEA的密钥变换过程中, 多次用到求$16bit$密钥Z在乘法$(\odot)$下的逆元$Z^{-1}$
+    \end{itemize}
+
+    \section{RSA公钥密码系统}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 1977年, RSA联合提出一种欧拉定理的公钥密码系统, 简称为RSA公钥密码系统, 他的安全性是基于大数因子分解这一困难问题.
+    \end{itemize}
+
+    \subsection{RSA加密算法}
+    一、 RSA体制用户i的公开加密变换$E_i$与保密的解密变换$D_i$的生成.
+
+    [1] 随机选取两个100个位(指十进制)以上的素数$p_i$和$q_i$.
+
+    [2] 计算$n_i=p_iq_i, \Phi(n_i)=(p_i-1)(q_i-1)$
+
+    [3] 随机选取整数$e_i$, 满足$(e_i, \Phi(n_i))=1$
+
+    [4] 利用欧几里得算法计算$d_i$满足$e_id_i=1[\bmod \Phi(n_i)]$.
+
+    [5] 公布$n_i, e_i$作为$E_i$, 记为$E_i=<n_i, e_i>$. 保密$p_i, q_i, d_i, \Phi(n_i)$作为$D_i$, 记为$D_i=<p_i, q_i, d_i, \Phi(n_i)>$.
+
+    加密算法: $c=E_i(m)=m^{e_i}(\bmod n_i)$
+    解密算法: $m=D_i(c)=c^{d_i}(\bmod n_i)$
+
+    \section{RSA体制的加解密过程}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item RSA体制为\hl{分组密码体制}, 第一步需将明文数字化, 用户i的明文字母表和密文字母表均取$Z_{n_i}=\{0,1,\cdots,n_{i-1}\}$.
+
+        1. 加密过程
+        \begin{itemize}
+            \item 设用户j欲将明文加密后传给用户i, 用户j实施下列各步:
+
+            [1] 在公开钥数据库中查得用户i的公开钥$E_i=<n_i, e_i>$
+
+            [2] 将m分组为$m=m_1m_2\cdots m_r, m_a\in Z_{n_i}, a=1,2,\cdots,r$.
+
+            [3] 对每一个分组作加密变换, 即对$a=1,2\cdots,r$作
+
+            $$
+            c_a=E_i(m_a)\equiv m_a^{e_i}(\bmod n_i)
+            $$
+
+            [4] 将密文$c=c_1c_2\cdots c_r$传给用户i.
+        \end{itemize}
+
+        2. 解密过程
+        \begin{itemize}
+            \item 设用户i收到密文$c=c_1c_2\cdots c_r$后
+
+            [1] 对每一分组密文做解密变换, 即对$a=1,2,\cdots,r$, 作
+            $$m_a=D_i(c_a)=c_a^{d_i}(\bmod n_i)$$
+
+            [2] 合并分组, 得到$m=m_1m_2\cdots m_r$.
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{模求幂运算}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 模求幂运算即进行形式为$x^c(\bmod n)$的函数计算
+        \item 求$x^c(mod n)$的计算可通过对指数c的二进制化来表示.
+
+        方法一:
+
+        假设$x^c(\bmod n)$中的指数c以二进制形式表示为:
+        $$c=(c_lc_{l-1}\cdots c_1c_0)_2=\sum\limits_{i=0}^l c_i2^i=\sum\limits_{c_i\neq 0} 2^i; c_i=0; 0\le i\le l$$
+
+        则
+        $$x^c(\bmod n)\equiv x^{\sum\limits_{c_i\neq 0} 2^i} (\bmod n)=\prod_{c_i\neq 0} x^{2^i}(\bmod n)$$
+
+        例如: 计算$16^7(\bmod 4731)$
+
+        解: 因为$7=(111)_2$
+        $$
+        \begin{aligned}
+            &i=0, 16^{2^0}=16^1\equiv 16(\bmod 4731)\\
+            &i=1, 16^{2^1}=16^2\equiv 256(\bmod 4731)\\
+            &i=2, 16^{2^2}=16^4\equiv 65536(\bmod 4731)=4033(\bmod 4731)\\
+        \end{aligned}
+        $$
+
+        所以
+        $$
+        \begin{aligned}
+            16^7(\bmod 4731)&\equiv (16\times 256\times 4033)(\bmod 4731)\\
+                            &=16519168(\bmod 4731)\\
+                            &=3427(\bmod 4731)
+        \end{aligned}
+        $$
+
+        方法二:
+
+        假设$x^c(\bmod n)$中的指数c以二进制形式表示为:
+        $$c=\sum\limits_{i=0}^{l-1} c_i2^i$$
+
+        其中$c_i=0,1, 0\le i\le l-1$
+
+        计算$z=x^c(\bmod n)$的算法如下:
+
+        [1] z=1,
+
+        [2] for i=l-1, down to 0 do
+
+        [3] $z=z^2(\bmod n)$,
+
+        [4] if $c_i=1$ 则 $z=z^2\times x(\bmod n)$
+
+        [5] if $c_i=0$ 则 $z=z^2(\bmod n)$
+
+        例如: 计算$1520^{13}(\bmod 2537)$
+
+        解: 此例中$x=1520, c=13, n=2537$, 因为
+        $$
+        \begin{aligned}
+            &13=(1101)_2=1\times 2^3+1\times 2^2+0\times 2^1+1\times 2^0\\
+            &i=3, c_3=1, z=z^2\times x=1^2\times 1520(\bmod 2537)\\
+            &i=2, c_2=1, z=z^2\times x=1520^2\times 1520(\bmod 2537)\equiv 1649(\bmod 2537)\\
+            &i=1, c_1=0, z=z^2 =1649^2(\bmod 2537)=2074(\bmod 2537)\\
+            &i=0, c_0=1, z=z^2\times x=2074^2\times 1520(\bmod 2537)=1285(\bmod 2537)\\
+        \end{aligned}
+        $$
+
+        所以, $1520^{13}(\bmod 2537)\equiv 1285(\bmod 2537)$
+    \end{itemize}
+
+    \subsection{RSA加密举例}
+
+    [1] 假设用户i随机选择两个十进制大素数为$p_i=43, q_=59$
+
+    [2] 计算
+    $
+    \begin{aligned}
+        &n_i=p_iq_i=43\times 59=2537\\
+        &\Phi(n_i)=(p_i-1)\times (q_i-1)=42\times 58=2436
+    \end{aligned}
+    $
+
+    [3] 随机选取整数$e_i=13$, 满足$(e_i, \Phi(n_i))=(13, 2436)=1$
+
+    [4] 利用欧几里得算法计算$d_i$, 满足$e_id_i=1\bmod \Phi(n_i)=1(\bmod 2436)$
+
+    辗转相除, 得:
+    $$
+    \begin{aligned}
+        1&=3-2=3-(5-3)=2\times 3-5\\
+         &=2\times (13-2\times 5)-5=2\times 13\-5\times 5\\
+         &=2\times 13 - 5\times (2436-187\times 13)\\
+         &=-5\times 2436+937\times 13\\
+    \end{aligned}
+    $$
+
+    $$
+    \begin{aligned}
+        &937\times 13\equiv 1(\bmod 2436)\\
+        &d_i=937\\
+    \end{aligned}
+    $$
+
+    pu bl ic ke ye nc ry pt io ns
+
+    \begin{table}[h]
+        \centering
+        \caption{利用下表将明文数字化}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \hline
+            明文 &a &b &c &d &e &f &g &h &i &j &k &l &m\\
+            \hline
+            数字 &0 &1 &2 &3 &4 &5 &6 &7 &8 &9 &10 &11 &12\\
+            \hline
+            \hline
+            明文 &n &o &p &q &r &s &t &u &v &w &x &y &z\\
+            \hline
+            数字 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23 &24 &25\\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    对明文块数字化得结果如下:
+    1520 0111 0802 1004 2404 1302 1724 1519 0814 1318
+
+    [3] 加密变换
+    \begin{itemize}
+        \item $1520^{13}(\bmod 2537)\equiv 1285(\bmod 2537)$
+        $$
+        \begin{aligned}
+            &13=(1101)_2=1\times 2^3+1\times 2^2+0\times 2^1+1\times 2^0\\
+            &i=3, c_3=1, z=z^2\times x=1^2\times 1520=1520(\bmod 2537)\\
+            &i=2, c_2=1, z=z^2\times x=1520^2\times 1520=1649(\bmod 2537)\\
+            &i=1, c_1=0, z=z^2=1649^2=2074(\bmod 2537)\\
+            &i=0, c_0=1, z=z^2\times x=2074^2\times 1520=1285(\bmod 2537)\\
+        \end{aligned}
+        $$
+        \item $111^{13}(\bmod 2537)\equiv 1648(\bmod 2537)$
+        \item $802^{13}(\bmod 2537)\equiv 1410(\bmod 2537)$
+
+        $\cdots \cdots$
+
+        \item $1519^{13}(\bmod 2537)\equiv 2132(\bmod 2537)$
+        \item $814^{13}(\bmod 2537)\equiv 1751(\bmod 2537)$
+        \item $1418^{13}(\bmod 2537)\equiv 1289(\bmod 2537)$
+    \end{itemize}
+
+    \section{RSA的安全性}
+    \begin{itemize}
+        \item 若$n=pq$被因数分解, 则RSA便被攻破
+
+        若p,q已知, 则$\Phi(n)=(p-1)(q-1)$可以算出, 解密密钥d可用欧几里得算法求出.
+
+        \item RSA的安全性依赖于因数分解的困难性, 时间复杂性为$e^{\sqrt{\ln n\cdot \ln(\ln n)}}$
+        \item 基于对RSA系统安全性的考虑, 在设计RSA系统时, p,q应满足:
+
+        [1] \hl{p,q要足够大}, 一般因该在$10^{100}\sim 10^{125}$之间, 这样才可以基本保证不会再有效时间内被密码分析人员破译出参数.
+
+        [2] 如果$p>q$, 则差值$p-q$\hl{不宜太小}, 最好是\hl{与p,q的位数接近}
+
+        如果p和q的数值相当接近, 则$\frac{1}{2}(p+q)\approx \sqrt{n}$, 并且$\frac{1}{2}(p-q)$是一个相当小的数, 因此等式
+        $(\frac{p+q}{2})^2-n=(\frac{p-q}{2})^2$的右端是一个相当小的数, 可以利用Fermat因数分解将n分解因数.
+
+        [3] p-1和q-1的\underline{最大公约数}\mathcolorbox{red}{$d=((p-1), (q-1))$}应尽量小.否则, 将有$d^2$个整数b, 使得n对b是伪素数, 这就增大了将n因数分解的可能性.
+
+        [4] p-1和q-1都应该\underline{至少含有一个大的素因子}, p+1与q+1也应该\underline{至少含有一个大的素因子}, 否则就可能利用p-1和p+1方法求出n的真因数.
+
+        \item 对RSA是否存在一种不依赖于分解n破译方法? 虽未发现, 但没有严格的讨论. 值得注意的是存在这样一种例子: $m=m_{k-1}^e(\bmod n)$.
+        例如: 取$p=17, q=11$, 则$n=pq=187$, 取$e=7$, 明文$m=123$. 可证明经过RSA连续加密变换可得到$m_4=m$, 即连续4次进行RSA变换后又恢复到原文.
+        $$
+        \begin{aligned}
+            &m_0=m=123, 123^7\equiv 183(\bmod 187),\\
+            &m_0=m=183, 183^7\equiv 72(\bmod 187),\\
+            &m_0=m=72, 72^7\equiv 30(\bmod 187),\\
+            &m_0=m=30, 30^7\equiv 123(\bmod 187),\\
+            &m_0=m=123, 123^7\equiv 183(\bmod 187).\\
+        \end{aligned}
+        $$
+
+        \item 这是RSA公钥密码体制存在的一种潜在弱点.
+    \end{itemize}
+
+    \subsection{RSA公钥密码体制的弱点}
+    \begin{itemize}
+        \item 对RSA公钥密码体制的攻击, 一般欲从分解模n而获得解密密钥很难奏效, 但这并不意味者密码分析者不能通过\hl{其他途径破译该体制}
+        \item 美国学者Simmons 首先提出了破译方案的一种途径, 其描述如下:
+        \begin{itemize}
+            \renewcommand{\labelitemi}{$\Rightarrow$}
+            \item RSA公钥密码体制利用公开钥$[e, n]$对明文进行加密
+            $$m^e\equiv c(\bmod n)$$
+            \item 密码分析者可能从不保密的信道上截获到密文c, 但因为不知道私秘钥d, 故不能按下式译成明文m
+            $$c^d\equiv m(\bmod n)$$
+            \item 此时可对密文c利用公开钥e依次进行如下变换
+            $$
+            \begin{aligned}
+                &c^e\equiv c_1(\bmod n)\\
+                &c^e_1\equiv c_2(\bmod n)\\
+                &\cdots \cdots\\
+                &c^e_{\beta -1}\equiv c_{\beta}(\bmod n)\\
+                &c^e_{\beta}\equiv c_{\beta+1}\equiv c(\bmod n)\\
+            \end{aligned}
+            $$
+            \item 即当上述模求幂运算依次迭代$\beta +1$后, 其运算结果\hl{恰好等于密文c}. 即可以知道第$\beta$步的计算结果$c_{\beta}$就是明文m.这种破译方法的理论根据是基于下述定理.
+            \begin{theorem}
+                设n为素数或不同素数之积, 如果$(e, \Phi(n))=1$, 则存在正整数h
+                $$a^{e^h}\equiv a(\bmod n)$$
+            \end{theorem}
+
+            例如 设RSA公钥密码体制的一组参数为$p=383, q=563, n=p\times q=215629, e=49, d=56957$. 加密、解密变换式为
+            $$
+            \begin{aligned}
+                &m^{49}\equiv c(\bmod 215629)\\
+                &c^{56957\equiv m(\bmod 215629)}\\
+            \end{aligned}
+            $$
+            设明文信息为$m=123456$, 由于
+            $$(123456)^{49}=1603(\bmod 215629)$$
+            密码分析者利用公钥$<49, 215629>$和密文$c=1603$, 按公式(3)运算得到
+            $$
+            \begin{aligned}
+                &c^e=\equiv c_1(\bmod n), c_1=180661\\
+                &c^e_1=\equiv c_2(\bmod n), c_2=109265\\
+                &c^e_2=\equiv c_3(\bmod n), c_3=131172\\
+                &c^e_3=\equiv c_4(\bmod n), c_4=98178\\
+                &c^e_4=\equiv c_5(\bmod n), c_5=56372\\
+                &c^e_5=\equiv c_6(\bmod n), c_6=63846\\
+                &c^e_6=\equiv c_7(\bmod n), c_7=146799\\
+                &c^e_7=\equiv c_8(\bmod n), c_8=85978\\
+                &c^e_8=\equiv c_9(\bmod n), c_9=123456\\
+                &c^e_9=\equiv c_10(\bmod n), c_10=1603\\
+            \end{aligned}
+            $$
+
+            仅仅经过10步变换就得到$c_{10}=c$, 即$c_9=m=123456$
+            这是因为$49^{10}\equiv 1(\bmod 215629)$
+
+            \begin{itemize}
+                \item 在此例中周期等于10a
+                \item 为使的上述破译方法不能成为实际, 必须合理选择RSA公钥密码体制的有关参数, 以保证$\beta$足够大.
+                \item Rivest等人提出, 当$(p-1)$和$(q-1)$不具有小素因数时, 可以迫使周期$\beta$足够大, 使得RSA体制在实际上仍是不可破译的. 具体在选择素数p和q时可按\hl{强素数}的定义选取.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+
+    \section{大素数的产生和因数分解}
+
+    \subsection{大素数的产生}
+    \begin{itemize}
+        \item 构造RSA公钥密码体制时, 选取大素数p和q是非常关键的.
+        \item 大素数的产生及测试使密码学领域中的一个重要课题.
+        \item 产生大素数的方法可以分为两大类:
+        \begin{enumerate}
+            \item 确定性素数产生法
+
+            [1] 基于\hl{P定理}的确定性素数产生方法---该方法需要已知$n-1$的部分素因子.
+
+            [2] 基于\hl{Lucas定理}的确定性素数产生方法---该方法需要已知$n-1$的全部素因子
+            \begin{itemize}
+                \item \hl{优点}: 该方法产生的一定是素数
+                \item \hl{缺点}: 产生的素数带有一定的限制. 即如果算法设计不当, 构造的素数容易产生规律性, 使密码分析人员较容易地追踪素数的变化, 直接猜测到RSA系统所使用的素数.
+            \end{itemize}
+            \item 概率性素数产生方法
+            \begin{itemize}
+                \item 算法较多, 是当今产生大素数的主要算法
+                \item 在实际应用中的方法是: 先产生\hl{大的随机数}, 然后利用S-S或者M-R算法进行\hl{素数测试}
+                \item \hl{缺点}: 该方法产生的不一定是\hl{素数}, 即产生的数是伪素数, 虽然是\hl{合数}的可能性很小, 但这种可能性依然存在.
+                \item \hl{优点}: 产生的伪素数的速度较快, 构造的伪素数\hl{无规律性}
+
+                \hl{在构造RSA体制中的大素数时, 可将上述两种方法结合起来}:
+
+                [1] 首先利用\hl{概率性素数产生方法}产生伪素数;
+
+                [2] 然后再利用确定性素数产生方法对所产生的伪素数进行检验
+            \end{itemize}
+        \end{enumerate}
+    \end{itemize}
+
+    \subsubsection{因数分解}
+    \begin{itemize}
+        \item 因数分解$n=p\times q$是对RSA公钥密码体制进行有效攻击的方法, 但因数分解比\hl{大素数}的产生更为困难.
+        \item 随着对RSA公钥密码体制研究的深入, 大整数因数分解
+        \item 因数分解方面的重大事件如下:
+
+        [1] 1983年, DHS利用\hl{二次筛选法}成功分解了69为十进制数
+
+        [2] 1989年, LM利用\hl{二次筛选法}通过把计算分配给数百台工作站实现了\hl{106位十进制的因数分解}
+
+        [3] 1990年, LM和P利用\hl{数域筛选法}动用700台工作站, 分解了155位十进制数的一个特例
+
+        \item 为保证RSA公钥密码体制的安全性, n应大于200位十进制数
+        \item 常用的因数分解法有:
+
+        [1] Fermat 因数分解法
+
+        [2] 连分数因数分解发
+
+        [3] 圆锥曲线分解整数
+
+        [4] P-1方法
+    \end{itemize}
+
+    \section{背包公钥密码系统}
+    在DH提出公钥密码设想两年后, MH提出了一种基于组合数学中背包问题的公钥密码系统, 称为MH背包公钥密码系统
+
+    \subsection{背包问题}
+    \begin{itemize}
+        \item \hl{背包问题}是著名的数学难题, 至今尚无有效的求解方法: 因为对$2^n$中可能进行穷举搜索, 在目前条件下, 不可能在实际允许的时间内完成
+        \item 背包问题属于\hl{NP完全问题}
+        \item 背包问题的描述如下
+    \end{itemize}
+
+    \subsubsection{背包公钥密码}
+    \begin{itemize}
+        \item 取$a=(a_1, a_2, \cdots, a_n)$作为加密密钥公开, 其中$a_1, a_2, \cdots, a_n$为整数
+        \item 明文$m=m_1m_2\cdots m_n$, 是n位0,1字符串
+        \item 利用公钥加密如下: $c=a_1m_1+a_2m_2+\cdots a_nm_n$
+        \item 从密文求明文等价于背包问题
+
+        例如: 若$a=(28, 32, 11, 8, 71, 51, 43), m=0100101$
+
+        则$c=32+71+43=146$
+
+        即 得到密文$c=146$
+
+        第三者无法从密文推知明文$m_1m_2\cdots m_7$.
+    \end{itemize}
+
+    \subsubsection{超递增序列}
+    \begin{itemize}
+        \item 并非所有的背包问题都没有有效的求解算法
+        \item 若序列$a=1_1a_2\cdots a_n$ 满足条件:
+        $$a_i > \sum\limits_{j=1}^{i-1}a_j, i=1,2,3,\cdots, n$$
+
+        则称这样的序列为超递增序列
+
+        \item 一般来说, 超递增序列的解:
+
+        对满足不等式$a_i>\sum\limits_{j=1}^{i-1}, i=1,2,3\cdots, n$的方程
+        $$a_1x_1+a_2x_2+\cdots +a_nx_n=b$$
+
+        其解为
+        $$
+        \left\{ \begin{aligned}
+            &0, \mbox{若}b\le \sum\limits_{j=1}^{n-1} a_j\\
+            &1, \mbox{若}b>\sum\limits_{j-1}^{n-1} a_j\\
+        \end{aligned}\right.
+        i=n, n-1, \cdots, 2
+        $$
+
+        例如: 设$a=(2,4,7,15,30)$, 求解$2x_1+4x_2+7x_3+15x_4+30x_5=39$
+
+        解: 因为$2+4+7+15=28<39$, 所以
+        $$x_5=1, 2x_1+4x_2+7x_3+15x_4=39-30=9$$
+
+        因为$2+4+7=13>9$, 所以
+        $$x_4=0, 2x_1+4x_2+7x_3=9-0=9$$
+
+        因为$2+4=6<9$, 所以
+        $$x_3=1, 2x_1+4x_2=9-7=2$$
+
+        因为$2=2$, 所以
+        $$x_2=0, 2x_1=2, x_1=1$$
+
+        \item 不能将超递增序列本身作为公开密钥
+        \item 一般的做法是将超递增序列转换为复杂序列, 然后作为公开钥公开, 第三者不知道变换及其逆变换,故不能在多项式时间内破译出明文.
+    \end{itemize}
+
+    \section{超递增序列的变换}
+    设$(a_1, a_2, \cdots, a_n)$是超递增序列, 取整数w和m, 其中
+    $$m>2a_n, (w, m)=1, w\overline{w}\equiv 1(\bmod m)$$
+
+    $\overline{w}$为模m的逆. 做变换$b_i\equiv wa_i(\bmod m), i=1,2\cdots,n$, 可得到一个序列$(b_1, b_2, \cdots, b_n)$. 一般该序列不再是超递增序列, 将$(b_1, b_2, \cdots, b_n)$公开.
+
+    对$\sum\limits_{i=1}^n b_ix_i=b$两边同时乘上$\overline{w}$, 得到
+    $$\sum\limits_{i=1}^n \overline{w}b_ix_i\equiv \sum\limits_{i=1}^n\equiv \overline{w}b\equiv b_0(\bmod m)$$
+
+    因为
+    $$b_0<m, \sum\limits_{i=1}^n a_i <m$$
+    所以
+    $$\sum\limits_{i=1}^n a_ix_i=b_0$$
+    容易解密
+
+    \subsection{背包密码体制加密和解密举例}
+    例如 假设$a=(2,5,9,21,45,103,215,450,946)$是一个秘密的超递增序列, 取$m'=2003, w=1289$
+
+    \begin{enumerate}
+        \item 计算公开钥
+        由 $b_i\equiv wa_i(\bmod m')$, 得到
+        $$
+        \begin{aligned}
+            &b_1=1289\times 2\equiv 575(\bmod 2003)\\
+            &b_2=1289\times 5\equiv 436(\bmod 2003)\\
+            &b_3=1289\times 9\equiv 1586(\bmod 2003)\\
+            &b_4=1289\times 21\equiv 1030(\bmod 2003)\\
+            &b_5=1289\times 45\equiv 1921(\bmod 2003)\\
+            &b_6=1289\times 103\equiv 569(\bmod 2003)\\
+            &b_7=1289\times 215\equiv 721(\bmod 2003)\\
+            &b_8=1289\times 450\equiv 1183(\bmod 2003)\\
+            &b_9=1289\times 946\equiv 1570(\bmod 2003)\\
+        \end{aligned}
+        $$
+
+        即将$(575, 436, 1586, 1030, 1921, 569, 721, 1183, 1570)$公开作为加密钥.
+
+        \item 用户A对明文$m=101100111$加密, 得b
+        $$
+        \begin{aligned}
+            &b=b_1m_1+b_2m_2+b_3m_3+b_4m_4+m_5m_5+b_6m_6+b_7m_7+b_8m_8+b_9m_9\\
+             &=575+1586+1030+721+1183+1570\\
+             &=6665\\
+        \end{aligned}
+        $$
+
+        \item 用户B收到密文b后, 需要进行以下工作才能回复明文m:
+
+        [1] 利用欧几里得算法求解$w^{-1}$
+
+        由$w^{-1}w\equiv 1(\bmod m')$及$m'=2003, w=1289$得到
+        $$
+        \begin{aligned}
+            &w^{-1}1289\equiv 1(\bmod 2003)\\
+            &w^{-1}\equiv 317(\bmod 2003)\\
+        \end{aligned}
+        $$
+
+        [2] 计算$b_0$, 即c
+        由$w^{-1}b\equiv b_0(\bmod m')$
+
+        得到$b_0\equiv 317\times 6665\equiv 1643(\bmod 2003)$
+
+        [3] 恢复原来的超递增序列得到
+
+        由$a_i\equiv w^{-1}b_i(\bmod m')$, 得到
+        $$
+        \begin{aligned}
+            &a_1\equiv w^{-1}b_1\equiv 317\times 575\equiv 2(\bmod 2003)\\
+            &a_2\equiv w^{-1}b_2\equiv 317\times 436\equiv 5(\bmod 2003)\\
+            &a_3\equiv w^{-1}b_3\equiv 317\times 1586\equiv 9(\bmod 2003)\\
+            &a_4\equiv w^{-1}b_4\equiv 317\times 1030\equiv 21(\bmod 2003)\\
+            &a_5\equiv w^{-1}b_5\equiv 317\times 1921\equiv 45(\bmod 2003)\\
+            &a_6\equiv w^{-1}b_6\equiv 317\times 569\equiv 103(\bmod 2003)\\
+            &a_7\equiv w^{-1}b_7\equiv 317\times 721\equiv 215(\bmod 2003)\\
+            &a_8\equiv w^{-1}b_8\equiv 317\times 1183\equiv 450(\bmod 2003)\\
+            &a_9\equiv w^{-1}b_9\equiv 317\times 1570\equiv 946(\bmod 2003)\\
+        \end{aligned}
+        $$
+
+        [4] 有超递增序列a求解下列方程组
+        $$2x_1+5x_2+9x_3+21x_4+45x_5+103x_6+215x_7+450x_8+946x_9=1643$$
+
+        因为$2+5+9+21+45+103+215+450=850<1643$, 所以
+        $$x_9=1, 2x_1+5x_2+9x_3+21x_4+45x_5+103x_6+215x_7+450x_8=1643-946=697$$
+
+        因为$2+5+9+21+45+103+215=400<697$, 所以
+        $$x_8=1, 2x_1+5x_2+9x_3+21x_4+45x_5+103x_6+215x_7=697-450=247$$
+
+        因为$2+5+9+21+45+103=185<247$, 所以
+        $$x_7=1, 2x_1+5x_2+9x_3+21x_4+45x_5+103x_6=247-215=32$$
+
+        因为$2+5+9+21+45=82>32$, 所以
+        $$x_6=0, 2x_1+5x_2+9x_3+21x_4+45x_5=32$$
+
+        因为$2+5+9+21=37>32$, 所以
+        $$x_5=0, 2x_1+5x_2+9x_3+21x_4=32$$
+
+        因为$2+5+9=16<32$, 所以
+        $$x_4=1, 2x_1+5x_2+9x_3=32-21=11$$
+
+        因为$2+5=7<11$, 所以
+        $$x_3=1, 2x_1+5x_2=11-9=2$$
+
+        因为$2=2$, 所以
+        $$x_2=0, 2x_1=2, x_1=1$$
+
+        [5] 明文为$m=101100111$
+    \end{enumerate}
+
+    \subsection{背包密码系统工作原理}
+    [1] 每个用户选择一个长为n的超递增序列$(a_1, a_2, \cdots, a_n)$.
+
+    [2] 每个用户选用整数m和w, 其中$m>2a_n, (w, m)=1$
+
+    [3] 做变换$b_i\equiv wa_i(\bmod m), i=1,2,\cdots, n$.
+
+    [4] 将$(b_1,b_2, b_3, \cdots, b_n)$公开.
+
+    [5] 欲传送明文m, 先将明文m的字母转换成0,1符号串, 并将所得到的符号串分裂成长为n的块. 如果最末块长不足n, 可用\hl{短块加密技术处理}.
+
+    [6] 对一个明文块$m_1, m_2, m_3, \cdots, m_n$, 给出对应的密文
+    $$c=b_1m_1+b_2m_2\cdots b_nm_n$$
+
+    可见若不知道m和w, 则解密问题将导致一个\hl{背包问题}.
+
+    \subsection{Rabin公钥密码}
+    对RSA公钥密码体制的攻击, 若采用分解n的方法, 其难度不超过大数分; 若从$\Phi(n)$入手进行攻击, 其难度与分解n相当.
+    \begin{itemize}
+        \item Rabin提出了一种对RSA的修正方案, 其特点是:
+
+        [1] 该方法不是一一对应的单向陷门函数为基础的, 因此, 对应于同一段密文, 有两个以上可能的明文, 这种不确定性, 增强了密码分析的困难.
+
+        [2] 破译Rabin密文等价于对大整数n的分解.
+
+        \item RSA密码体制的加密密钥e的选择需满足$1<e<\Phi(n)$, 且$[e, \Phi(n)]=1$.
+        \item Rabin密码体制的加密算法是:
+        $$c\equiv m^2(\bmod n)$$
+        更一般的是
+
+        $c\equiv m(m+b)(\bmod n)$, b为$0\le b<n$的整数.
+
+        \item 其中, m是明文对应的数据, c是密文对应的数据, m, c都属于$Z_n$.
+        \begin{itemize}
+            \item 与RSA密码体制一样, Rabin密码体制也是分组密码体制
+            \item 式中: $n=pq$, $p,q$为奇素数
+            \item 在Rabin密码体制中为了容易实现, 一般取$p\equiv q\equiv 3(\bmod 4)$, 其余对Rabin密码体制的要求与RSA密码体制一样
+        \end{itemize}
+
+        \item 解密算法
+
+        已知c求m, 导致解:
+        $$m^2\equiv c(\bmod n)$$
+        又
+        $$n=pq$$
+        亦即
+        $$
+        \left\{ \begin{aligned}
+            &x^2\equiv c(\bmod p)\\
+            &x^2\equiv c(\bmod q)\\
+        \end{aligned}\right.
+        $$
+        由于
+        $$(\frac{a}{p})=(\frac{a}{q})=1$$
+
+        所以对每一个都将有两个解, 即
+        $$
+        \begin{aligned}
+            &x\equiv m(\bmod p), x\equiv -m(\bmod p)\\
+            &x\equiv m(\bmod q), x\equiv -m(\bmod q)\\
+        \end{aligned}
+        $$
+        经过组合可得到4个同余方程组
+        $$
+        \begin{aligned}
+            &
+            \left\{
+                \begin{aligned}
+                    &x\equiv m(\bmod p)\\
+                    &x\equiv m(\bmod q)\\
+                \end{aligned}
+            \right. ,
+            \left\{
+            \begin{aligned}
+                &x\equiv m(\bmod p)\\
+                &x\equiv -m(\bmod q)\\
+            \end{aligned}
+            \right.\\
+            &\left\{
+            \begin{aligned}
+                &x\equiv -m(\bmod p)\\
+                &x\equiv m(\bmod q)\\
+            \end{aligned}
+            \right. ,
+            \left\{
+            \begin{aligned}
+                &x\equiv -m(\bmod p)\\
+                &x\equiv -m(\bmod q)\\
+            \end{aligned}
+            \right.\\
+        \end{aligned}
+        $$
+        \item 即Rabin密码的已知密文对应的明文不唯一, 有4种可能的结果, 其中一个有确切意义才是所求的明文.
+        \item 可以用某种方式在明文后面不加记为数作为识别码, 用它们从四个可能的明文中确立正确的明文.
+        \item 下面的定理说明了对Rabin密码攻击的困难程度等价于大数n的分解.
+
+        \begin{theorem}
+            求解方程$x^2\equiv a(\bmod n)$与分解n是等价的.
+        \end{theorem}
+    \end{itemize}
+
+    \section{数字签名}
+    \begin{itemize}
+        \item RSA公钥密码体制另有一个重要作用---用作\hl{数字签名}, 其重要性不亚于公钥密码本身.
+        \item 一般的密码体制能保证信息不被非法窃取, 但不能防治发信方抵赖, 也不能防止收信方作假.
+
+        例如 因为
+        $$c\equiv m^e(\bmod n)$$
+        \begin{itemize}
+            \item 其中e和n是公开的, 容易引起收、发双方的争议和纠纷, 并且很难判断
+            \item 同时也为密码分析者利用模求幂运算的特殊周期性破译RSA提供了可能
+            \item 若采用\hl{隐藏加密指数}的方法可以有效的解决上述问题
+        \end{itemize}
+        \item 如何隐藏加密指数, 隐藏了加密指数, 合法的接受者如何解密
+
+        [1] 用户A用一把\hl{只有自己能锁也能开}的"数码锁a"把保密信息P(或密钥K)锁在箱子内, 经普通信道传递给B
+
+        [2] 用户B无法解密"a", 而是用一把\hl{只有自己能锁也能开}的"数码锁b"加锁, 此时, \hl{保密信息P同时收到数码锁a和b的保护}.
+
+        [3] 将箱子经过普通信道传回给发方A
+
+        [4] 用户A收到"箱子"后, 用自己的密钥开"数码锁a", 此时, \hl{"箱子"还保留收方B的"数码锁b"}
+
+        [5] 将此箱子经过普通信道传回给发送方A
+
+        [6] 用户B收到"箱子"后, 用自己的密钥开"数码锁b" 此时, \hl{收方B即刻获得保密信息P}
+
+        \item 显然, 当"箱子"经过普通信道在A和B之间传递时, 均有"数码锁"的加密保护. 这种工作方式保密性比较高, 而且杜绝了发、收双方出现就封的可能性.
+    \end{itemize}
+
+    \subsection{用户A和B设计工作密钥参数的准则}
+    用户A和B根据RSA公钥密码体制设计工作密钥参数
+    \begin{itemize}
+        \item 若用户A和B分别选定了公开钥$<e_n, n_a>$和$<e_b, n_b>$, 私秘钥$<d_a, p_a, q_a>$和$<d_b, p_b, q_b>$
+        \item 假设用户A为发送方, 需要将密钥K传送给接收方B. 发送方A可以:
+
+        [1] 选择两个随机大素数$p_s$和$q_s$, 且令$p_sq_s=n_s$.
+
+        [2] 随机选择一对加密、解密指数$e_s$和$d_s$, 这时的工作密钥参数为$<p_s, q_s, e_s, d_s, n_s>$
+    \end{itemize}
+
+    \subsection{发送方A和接收方B之间的信息变换和传递过程}
+    [1] 发送方A利用RSA公钥密码体制的工作模式, 将随机大素数$<p_s, q_s>$传送给接收方B, 即发送方A利用接收方B的公开钥$<e_b, n_b>$, 对$p_s$和$q_s$进行加密运算, 获得相应的密文$<p_{sc}, q_{sc}>$, 并经过普通信道发送给接收方B
+
+    [2] 接收方B利用自己的解密密钥$<d_b, n_b>$对密文$<p_{sc}, q_{sc}>$进行解密运算, 恢复出$p_s$和$q_s$, 并得到$n_s=p_sq_s$
+
+    [3] 根据$[d_r, \Phi(n_s)]=1$, 产生接收方为该次保密通信的选定的随机解密指数$d_r$, 根据$e_r\cdot d_r\equiv 1[\bmod \Phi(n_s)]$产生双方对应的随机加密指数$e_r$.
+
+    [4] 发送方A向接收方B传送该次保密通信的随机密K
+    \begin{itemize}
+        \item A利用自己的私秘钥$<d_a, n_a>$对K进行签名变换, 得到K的签名变换$K_s$
+    \end{itemize}
+\end{document}

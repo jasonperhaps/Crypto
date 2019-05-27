@@ -30,11 +30,11 @@
 
     则密文字母$\phi$ 可以用明文字母$\theta$ 表示如下:
     \begin{equation}
-        \phi = \theta + 3(mod26)
+        \phi = \theta + 3(\bmod26)
     \end{equation}
 
     若明文字母为y, 即$\theta = 24$时,
-    $$\phi \equiv 24 + 3(mod26) \equiv 27(mod26) \equiv 1(mod26)$$
+    $$\phi \equiv 24 + 3(\bmod26) \equiv 27(\bmod26) \equiv 1(\bmod26)$$
 
     因此, 密文字母为E.
 
@@ -43,7 +43,7 @@
         \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
         \item 公式(1)是\hl{凯撒密码}的数学形式, 也表示一种算法.式中\hl{密钥}为3, 实际表示倒退3步.
         \item 此例中, 密钥可为$1~ 25$之间的任意一个数字, 但若是选择0为密钥, 则密钥=明文, 实际上没有加密. 故式子(1)可以推广成
-        $$\phi = \theta + k(mod 26)$$
+        $$\phi = \theta + k(\bmod 26)$$
 
         这里$k\in K, K={1, 2, 3,..., 24, 25}$是密钥集合或密钥空间.
 
@@ -169,7 +169,7 @@
     \begin{itemize}
         \item 加法密码
         定义映射
-        $$f(a_i) = a_j, j\equiv i+k(mod n) 0<k<n$$
+        $$f(a_i) = a_j, j\equiv i+k(\bmod n) 0<k<n$$
 
         加密算法实际上是每一个字母向前\hl{推移}k位, 不同的k可得到不同的密文, 若令26个字母分别对应于整数0\~25, 如下表
 
@@ -186,7 +186,7 @@
             \hline
         \end{tabular}
         则加法密码辩护那实际是
-        $$c\equiv m+k(mod 26), 0<k<26$$
+        $$c\equiv m+k(\bmod 26), 0<k<26$$
 
         m是明文对应的\hl{明文数据}, c是密文对应的\hl{密文数据}, k是加密用的参数, 也称为\hl{密钥}
 
@@ -197,27 +197,27 @@
         密文数据的计算如下
         $$
         \begin{aligned}
-            &c_1=m_1+5(mod 26)=8(mod 26)=8\\
-            &c_2=m_2+5(mod 26)=5(mod 26)=5\\
-            &c_3=m_3+5(mod 26)=24(mod 26)=24\\
-            &c_4=m_4+5(mod 26)=5(mod 26)=5\\
-            &c_5=m_5+5(mod 26)=23(mod 26)=23\\
-            &c_6=m_6+5(mod 26)=9(mod 26)=9\\
-            &c_7=m_7+5(mod 26)=7(mod 26)=7\\
-            &c_8=m_8+5(mod 26)=25(mod 26)=25\\
-            &c_9=m_9+5(mod 26)=22(mod 26)=22\\
-            &c_{10}=m_{10}+5(mod 26)=13(mod 26)=13\\
-            &c_{11}=m_{11}+5(mod 26)=24(mod 26)=24\\
-            &c_{12}=m_{12}+5(mod 26)=29(mod 26)=3
+            &c_1=m_1+5(\bmod 26)=8(\bmod 26)=8\\
+            &c_2=m_2+5(\bmod 26)=5(\bmod 26)=5\\
+            &c_3=m_3+5(\bmod 26)=24(\bmod 26)=24\\
+            &c_4=m_4+5(\bmod 26)=5(\bmod 26)=5\\
+            &c_5=m_5+5(\bmod 26)=23(\bmod 26)=23\\
+            &c_6=m_6+5(\bmod 26)=9(\bmod 26)=9\\
+            &c_7=m_7+5(\bmod 26)=7(\bmod 26)=7\\
+            &c_8=m_8+5(\bmod 26)=25(\bmod 26)=25\\
+            &c_9=m_9+5(\bmod 26)=22(\bmod 26)=22\\
+            &c_{10}=m_{10}+5(\bmod 26)=13(\bmod 26)=13\\
+            &c_{11}=m_{11}+5(\bmod 26)=24(\bmod 26)=24\\
+            &c_{12}=m_{12}+5(\bmod 26)=29(\bmod 26)=3
         \end{aligned}
         $$
 
         \item 乘法密码
         映射
-        $$f(a_i)=a_j, j\equiv ik(mod n) (k, n)=1$$
+        $$f(a_i)=a_j, j\equiv ik(\bmod n) (k, n)=1$$
 
         若令26个字母与整数$0~25$对应, 则乘法密码变换实际是
-        $$c\equiv (mod 26) 0<k<26$$
+        $$c\equiv (\bmod 26) 0<k<26$$
 
         m是明文对应的\hl{明文数据}, c是密文对应的\hl{密文数据}, k是加密用的参数, 也称为\hl{密钥}
 
@@ -229,28 +229,28 @@
 
         $$
         \begin{aligned}
-            &c_1=3\times 5=15(mod 26)=15\\
-            &c_2=0\times 5=15(mod 26)=0\\
-            &c_3=19\times 5=95(mod 26)=17\\
-            &c_4=0\times 5=0(mod 26)=0\\
-            &c_5=18\times 5=15(mod 26)=15\\
-            &c_6=4\times 5=20(mod 26)=20\\
-            &c_7=2\times 5=10(mod 26)=10\\
-            &c_8=20\times 5=100(mod 26)=22\\
-            &c_9=17\times 5=85(mod 26)=7\\
-            &c_10=8\times 5=40(mod 26)=14\\
-            &c_11=19\times 5=95(mod 26)=17\\
-            &c_12=24\times 5=120(mod 26)=16
+            &c_1=3\times 5=15(\bmod 26)=15\\
+            &c_2=0\times 5=15(\bmod 26)=0\\
+            &c_3=19\times 5=95(\bmod 26)=17\\
+            &c_4=0\times 5=0(\bmod 26)=0\\
+            &c_5=18\times 5=15(\bmod 26)=15\\
+            &c_6=4\times 5=20(\bmod 26)=20\\
+            &c_7=2\times 5=10(\bmod 26)=10\\
+            &c_8=20\times 5=100(\bmod 26)=22\\
+            &c_9=17\times 5=85(\bmod 26)=7\\
+            &c_10=8\times 5=40(\bmod 26)=14\\
+            &c_11=19\times 5=95(\bmod 26)=17\\
+            &c_12=24\times 5=120(\bmod 26)=16
         \end{aligned}
         $$
 
         \item 仿射密码
         乘法密码与加法密码相结合便构成仿射密码
 
-        映射 $f(a_i)a_j, j\equiv ik_1+k_0(mod n) (k, n)=1, 0<k_0<n$
+        映射 $f(a_i)a_j, j\equiv ik_1+k_0(\bmod n) (k, n)=1, 0<k_0<n$
 
         若令26个字母与整数0~25相对应, 则仿射密码变换实际是
-        $$c\equiv mk_1 + k_0(mod 26) (k_1, 26)=1 0<k_0<26$$, 其中$(k_1, 26)=1$表示$k_1$与26的最大公约数为1
+        $$c\equiv mk_1 + k_0(\bmod 26) (k_1, 26)=1 0<k_0<26$$, 其中$(k_1, 26)=1$表示$k_1$与26的最大公约数为1
 
         m是明文对应的\hl{明文数据}, c是密文对应的\hl{密文数据}, $k_1$, $k_0$是加密的参数, 也称为\hl{密钥}.
 
@@ -265,29 +265,29 @@
         密文数据计算如下
         $$
         \begin{aligned}
-            &c_1=m_1\times k_1 + k_0(mod 26)=3\times 5 + 3(mod 26)=18(mod26)=18\\
-            &c_2=m_2\times k_1 + k_0(mod 26)=0\times 5 + 3(mod 26)=3(mod26)=3\\
-            &c_3=m_3\times k_1 + k_0(mod 26)=19\times 5 + 3(mod 26)=98(mod26)=20\\
-            &c_4=m_4\times k_1 + k_0(mod 26)=0\times 5 + 3(mod 26)=3(mod26)=3\\
-            &c_5=m_5\times k_1 + k_0(mod 26)=18\times 5 + 3(mod 26)=93(mod26)15\\
-            &c_6=m_6\times k_1 + k_0(mod 26)=4\times 5 + 3(mod 26)=23(mod26)=23\\
-            &c_7=m_7\times k_1 + k_0(mod 26)=2\times 5 + 3(mod 26)=13(mod26)=13\\
-            &c_8=m_8\times k_1 + k_0(mod 26)=20\times 5 + 3(mod 26)=103(mod26)=25\\
-            &c_9=m_9\times k_1 + k_0(mod 26)=17\times 5 + 3(mod 26)=88(mod26)=10\\
-            &c_10=m_10\times k_1 + k_0(mod 26)=8\times 5 + 3(mod 26)=43(mod26)=17\\
-            &c_11=m_11\times k_1 + k_0(mod 26)=19\times 5 + 3(mod 26)=98(mod26)=20\\
-            &c_12=m_1\times k_1 + k_0(mod 26)=24\times 5 + 3(mod 26)=123(mod26)=19
+            &c_1=m_1\times k_1 + k_0(\bmod 26)=3\times 5 + 3(\bmod 26)=18(\bmod26)=18\\
+            &c_2=m_2\times k_1 + k_0(\bmod 26)=0\times 5 + 3(\bmod 26)=3(\bmod26)=3\\
+            &c_3=m_3\times k_1 + k_0(\bmod 26)=19\times 5 + 3(\bmod 26)=98(\bmod26)=20\\
+            &c_4=m_4\times k_1 + k_0(\bmod 26)=0\times 5 + 3(\bmod 26)=3(\bmod26)=3\\
+            &c_5=m_5\times k_1 + k_0(\bmod 26)=18\times 5 + 3(\bmod 26)=93(\bmod26)15\\
+            &c_6=m_6\times k_1 + k_0(\bmod 26)=4\times 5 + 3(\bmod 26)=23(\bmod26)=23\\
+            &c_7=m_7\times k_1 + k_0(\bmod 26)=2\times 5 + 3(\bmod 26)=13(\bmod26)=13\\
+            &c_8=m_8\times k_1 + k_0(\bmod 26)=20\times 5 + 3(\bmod 26)=103(\bmod26)=25\\
+            &c_9=m_9\times k_1 + k_0(\bmod 26)=17\times 5 + 3(\bmod 26)=88(\bmod26)=10\\
+            &c_10=m_10\times k_1 + k_0(\bmod 26)=8\times 5 + 3(\bmod 26)=43(\bmod26)=17\\
+            &c_11=m_11\times k_1 + k_0(\bmod 26)=19\times 5 + 3(\bmod 26)=98(\bmod26)=20\\
+            &c_12=m_1\times k_1 + k_0(\bmod 26)=24\times 5 + 3(\bmod 26)=123(\bmod26)=19
         \end{aligned}
         $$
 
         \item 多项式密码
         映射
-        $$f(a_i)=a_j, j\equiv i^tk_t + i^{t-1}k_{t-1} + \cdots + ik_1 + k_0(mod n)$$
+        $$f(a_i)=a_j, j\equiv i^tk_t + i^{t-1}k_{t-1} + \cdots + ik_1 + k_0(\bmod n)$$
 
         其中$(k_i, n)=1, i=1,\cdots, t, 0<k_0<n$.
 
         若令26个字母与整数0\~{25}对应,则多项式密码变换实际是
-        $$c\equiv m^tk_t + m^{t-1}k_{t-1} + \cdots + k_1m + k_0(mod 26)$$
+        $$c\equiv m^tk_t + m^{t-1}k_{t-1} + \cdots + k_1m + k_0(\bmod 26)$$
         $(k_i, 26)=1, i=1, 2, \cdots, t, 0<k_0<26$
 
         m是明文对应的\hl{明文数据}, c是与密文对应的\hl{密文数据}, $k_t, \cdots, k_1, k_0$是加密用的参数, 也称为密钥.
@@ -447,7 +447,7 @@
         \begin{enumerate}
             \item 设密钥$K=k_1k_2\cdots k_n$, 明文$M=m_1m_2\cdots m_n$, 加密变换为
             $$E_k(M)=c_1c_2\cdots c_n$$
-            其中$c_i\equiv (m_i+k_i)mod26, i=1, 2,\cdots, n$.
+            其中$c_i\equiv (m_i+k_i)\bmod26, i=1, 2,\cdots, n$.
 
             维吉尼亚密码的密钥可以周期性延长, 周而复始, 以至无穷. 即令
             $$K=k_1k_2k_3\cdots$$
@@ -464,28 +464,28 @@
                 $$c=E_k(M)=EELT TIUN SMLR$$
 
                 即维吉尼亚方阵中, b行d列的E为密文的第一个字母, e行a列的E唯密文的第二个字母, s行t列为密文的第三个字母, $\cdots$.
-                或者利用公式$c_i=(m_i+k_i)mod 26, i=1, 2, \cdots, n$.
+                或者利用公式$c_i=(m_i+k_i)\bmod 26, i=1, 2, \cdots, n$.
 
                 $$
                 \begin{aligned}
-                    &c_1 = (m_1+k_1) mod 26 = (1+3) mod 26 = 4 = E\\
-                    &c_2 = (m_2+k_2) mod 26 = (0+4) mod 26 = 4 = E\\
+                    &c_1 = (m_1+k_1) \bmod 26 = (1+3) \bmod 26 = 4 = E\\
+                    &c_2 = (m_2+k_2) \bmod 26 = (0+4) \bmod 26 = 4 = E\\
                     &\cdots \cdots\\
-                    &c_{10} = (m_{10}+k_{10}) mod 26 = (1+3) mod 26 = 4 = E\\
-                    &c_{11} = (m_{11}+k_{11}) mod 26 = (8+4) mod 26 = 12 = M\\
-                    &c_{12} = (m_{12}+k_{12}) mod 26 = (24+19) mod 26 = 17 = R
+                    &c_{10} = (m_{10}+k_{10}) \bmod 26 = (1+3) \bmod 26 = 4 = E\\
+                    &c_{11} = (m_{11}+k_{11}) \bmod 26 = (8+4) \bmod 26 = 12 = M\\
+                    &c_{12} = (m_{12}+k_{12}) \bmod 26 = (24+19) \bmod 26 = 17 = R
                 \end{aligned}
                 $$
 
                 \item [3] 脱密过程: 以密钥字母$k_j(j=0,1,2,3)$为行号, 在方阵中该行的密文字母$c_i(i=0,1,2, \cdots,11)$所在的列的列号即为明文字母.
                 $$
                 \begin{aligned}
-                    &m_1 = (c_1-k_1) mod 26 = (4-1) mod 26 = 3 = D\\
-                    &m_2 = (c_2-k_2) mod 26 = (4-4) mod 26 = 0 = A\\
+                    &m_1 = (c_1-k_1) \bmod 26 = (4-1) \bmod 26 = 3 = D\\
+                    &m_2 = (c_2-k_2) \bmod 26 = (4-4) \bmod 26 = 0 = A\\
                     &\cdots \cdots\\
-                    &m_{10} = (c_{10}-k_{10}) mod 26 = (4-1) mod 26 = 3 = E\\
-                    &m_{11} = (c_{11}-k_{11}) mod 26 = (12-8) mod 26 = 4 = M\\
-                    &m_{12} = (c_{12}-k_{12}) mod 26 = (17-24) mod 26 = 19 = R
+                    &m_{10} = (c_{10}-k_{10}) \bmod 26 = (4-1) \bmod 26 = 3 = E\\
+                    &m_{11} = (c_{11}-k_{11}) \bmod 26 = (12-8) \bmod 26 = 4 = M\\
+                    &m_{12} = (c_{12}-k_{12}) \bmod 26 = (17-24) \bmod 26 = 19 = R
                 \end{aligned}
                 $$
 
@@ -599,7 +599,7 @@
         \hl{加密过程如下}:
         $$c_i=m_i\oplus k_i, i=0, 1, \cdots$$
 
-        即$c_i\equiv (m_i+k_i) mod 2, i=1,2,3 \cdots$
+        即$c_i\equiv (m_i+k_i) \bmod 2, i=1,2,3 \cdots$
 
         \item 编制代数密码
 
@@ -658,7 +658,7 @@
             \renewcommand\labelenumi{(\theenumi)}
             \item Hill加密算法
             设明文为: $M=m_1m_2\cdots m_l$, 密钥为$K=(k_{ij})_{l\times l}$
-            $$C=KM(mod n)$$
+            $$C=KM(\bmod n)$$
             式中:
             \begin{equation}
                 C=\left[ \begin{array}{c}{c_{1}} \\ {c_{2}} \\ {\vdots} \\ {c_{l}}\end{array}\right],
@@ -672,10 +672,10 @@
             其中
             \begin{equation}
                 \left\{
-                    \begin{aligned} &c_1=k_{11}m_1+k_{12}m_2+k_{13}m_3+\cdots +k_{1l}m_l (mod n)\\
-                                    &c_2=k_{21}m_1+k_{22}m_2+k_{23}m_3+\cdots +k_{2l}m_l (mod n)\\
+                    \begin{aligned} &c_1=k_{11}m_1+k_{12}m_2+k_{13}m_3+\cdots +k_{1l}m_l (\bmod n)\\
+                                    &c_2=k_{21}m_1+k_{22}m_2+k_{23}m_3+\cdots +k_{2l}m_l (\bmod n)\\
                                     &\cdots \cdots \\
-                                    &c_3=k_{l1}m_1+k_{l2}m_2+k_{l3}m_3+\cdots +k_{ll}m_l (mod n)
+                                    &c_3=k_{l1}m_1+k_{l2}m_2+k_{l3}m_3+\cdots +k_{ll}m_l (\bmod n)
                     \end{aligned}\right.
             \end{equation}
 
@@ -693,13 +693,13 @@
             \begin{equation}
                 \begin{aligned}
                     c_1&=k_{11}m_1+k_{12}m_2+k_{13}m_3+k_{14}m_4\\
-                    &=8\times 7+6\times 8+9\times 11+5\times 11=258\equiv 24(mod 26)\\
+                    &=8\times 7+6\times 8+9\times 11+5\times 11=258\equiv 24(\bmod 26)\\
                     c_2&=k_{21}m_1+k_{22}m_2+k_{23}m_3+k_{24}m_4\\
-                    &=6\times 7+9\times 8+5\times 11+10\times 11=179\equiv 19(mod 26)\\
+                    &=6\times 7+9\times 8+5\times 11+10\times 11=179\equiv 19(\bmod 26)\\
                     c_3&=k_{31}m_1+k_{32}m_2+k_{33}m_3+k_{34}m_4\\
-                    &=5\times 7+8\times 8+4\times 11+9\times 11=242\equiv 8(mod 26)\\
+                    &=5\times 7+8\times 8+4\times 11+9\times 11=242\equiv 8(\bmod 26)\\
                     c_4&=k_{41}m_1+k_{42}m_2+k_{43}m_3+k_{44}m_4\\
-                    &=10\times 7+6\times 8+11\times 11+4\times 11=283\equiv 23(mod 26)\\
+                    &=10\times 7+6\times 8+11\times 11+4\times 11=283\equiv 23(\bmod 26)\\
                 \end{aligned}
             \end{equation}
 
@@ -714,7 +714,7 @@
                 \left[ \begin{array}{c}{c_1}\\ {c_2}\end{array}\right]=K\left[ \begin{array}{c}{m_1}\\ {m_2} \end{array}\right]
                         =\left[ \begin{array}{cc}{6} &{7}\\ {3} &{8} \end{array}\right]\left[\begin{array}{c}{6}\\ {14} \end{array}\right]
                             &=\left[ \begin{array}{c}{134}\\ {130} \end{array}\right]\\
-                                &=\left[ \begin{array}{c}{4}\\ {0} \end{array}\right](mod 26)
+                                &=\left[ \begin{array}{c}{4}\\ {0} \end{array}\right](\bmod 26)
             \end{aligned}
             $$
 
@@ -723,7 +723,7 @@
                 \left[ \begin{array}{c}{c_3}\\ {c_4}\end{array}\right]=K\left[ \begin{array}{c}{m_3}\\ {m_4} \end{array}\right]
                         =\left[ \begin{array}{cc}{6} &{7}\\ {3} &{8} \end{array}\right]\left[\begin{array}{c}{14}\\ {3} \end{array}\right]
                             &=\left[ \begin{array}{c}{105}\\ {66} \end{array}\right]\\
-                                &=\left[ \begin{array}{c}{1}\\ {14} \end{array}\right](mod 26)
+                                &=\left[ \begin{array}{c}{1}\\ {14} \end{array}\right](\bmod 26)
             \end{aligned}
             $$
 
@@ -733,7 +733,7 @@
                 \item 一般来说, Hill密码能较好地抵抗频率分析. 采用"唯密文分析"很难攻破它, 但采用"已知明文的攻击"易被攻破.
 
                 \hl{Hill解密算法为}:
-                $$M=K^{-1}C(mod n)$$
+                $$M=K^{-1}C(\bmod n)$$
 
                 一般取$n=26$, 如果K有逆矩阵, 解密才是可能的.
 
@@ -763,16 +763,16 @@
 
                 例如 设$A=\left[ \begin{array}{cc}{6} &{7}\\ {3} &{8} \end{array}\right]$, 求$A^{-1}$
 
-                    解: $detA=6\times 8 - 3\times 7=27\equiv 1(mod 26)$
+                    解: $detA=6\times 8 - 3\times 7=27\equiv 1(\bmod 26)$
                     $$
-                    \because 1\times 1\equiv 1(mod 26)
+                    \because 1\times 1\equiv 1(\bmod 26)
                     \therefore (detA)^{-1}=1
                     $$
 
                     $$
                     \therefore
                     \begin{aligned}
-                        A^{-1}&=\left[ \begin{array}{cc}{8} &{-7}\\ {-3} &{6} \end{array}\right](mod 26)\\
+                        A^{-1}&=\left[ \begin{array}{cc}{8} &{-7}\\ {-3} &{6} \end{array}\right](\bmod 26)\\
                             &=\left[ \begin{array}{cc}{8} &{19}\\ {23} &{6} \end{array}\right]
                     \end{aligned}
                     $$
@@ -789,7 +789,7 @@
                         \left[ \begin{array}{c}{m_1}\\ {m_2}\end{array}\right]=K^{-1}\left[ \begin{array}{c}{c_1}\\ {c_2} \end{array}\right]
                                 &=\left[ \begin{array}{cc}{8} &{19}\\ {23} &{6}\end{array}\right]\left[ \begin{array}{c}{4}\\ {0} \end{array}\right]
                                     =\left[ \begin{array}{c}{32} \\{92} \end{array}\right]\\
-                                        &=\left[ \begin{array}{c}{6} \\{14} \end{array}\right](mod 26)
+                                        &=\left[ \begin{array}{c}{6} \\{14} \end{array}\right](\bmod 26)
                     \end{aligned}
                     $$
 
@@ -798,7 +798,7 @@
                         \left[ \begin{array}{c}{m_3}\\ {m_4}\end{array}\right]=K^{-1}\left[ \begin{array}{c}{c_3}\\ {c_4} \end{array}\right]
                                 &=\left[ \begin{array}{cc}{8} &{19}\\ {23} &{6}\end{array}\right]\left[ \begin{array}{c}{1}\\ {14} \end{array}\right]
                                     =\left[ \begin{array}{c}{274} \\{107} \end{array}\right]\\
-                                        &=\left[ \begin{array}{c}{6} \\{14} \end{array}\right](mod 26)
+                                        &=\left[ \begin{array}{c}{6} \\{14} \end{array}\right](\bmod 26)
                     \end{aligned}
                     $$
 
@@ -815,10 +815,10 @@
                 $$C_i=E(M_i, K)=e_K(M_i), 1\le i\le l$$
 
                 若定义两个$l\times l$矩阵: $M=(m_{ij})_{l\times l}, C=(c_{ij})_{l\times l}$, 则有矩阵方程
-                $$C\equiv KM(mod 26)$$
+                $$C\equiv KM(\bmod 26)$$
 
                 式中K是未知密钥K. 若M是可逆的, 则能计算出
-                $$K\equiv CM^{-1}(mod 26)$$
+                $$K\equiv CM^{-1}(\bmod 26)$$
 
                 从而破译改密码体制. 但是, 若M不可逆, 则必须再试另外l个---密文对
 
@@ -829,12 +829,12 @@
                 密文QIHRYB 对应的数据序列(16, 8, 7, 17, 24, 1).
 
                 因为l=2, 故将明文、密文按顺序分成三组, 即分别对应如下:
-                $$\left( \begin{array}{c}{16}\\ {8} \end{array}\right)=K\left( \begin{array}{c}{22}\\ {14} \end{array}\right)(mod 26)$$
-                $$\left( \begin{array}{c}{7}\\ {17} \end{array}\right)=K\left( \begin{array}{c}{17}\\ {10} \end{array}\right)(mod 26)$$
-                $$\left( \begin{array}{c}{24}\\ {1} \end{array}\right)=K\left( \begin{array}{c}{4}\\ {17} \end{array}\right)(mod 26)$$
+                $$\left( \begin{array}{c}{16}\\ {8} \end{array}\right)=K\left( \begin{array}{c}{22}\\ {14} \end{array}\right)(\bmod 26)$$
+                $$\left( \begin{array}{c}{7}\\ {17} \end{array}\right)=K\left( \begin{array}{c}{17}\\ {10} \end{array}\right)(\bmod 26)$$
+                $$\left( \begin{array}{c}{24}\\ {1} \end{array}\right)=K\left( \begin{array}{c}{4}\\ {17} \end{array}\right)(\bmod 26)$$
 
                 从前面两个明文---密文对可以得到:
-                $$\left[ \begin{array}{cc}{16} &{7}\\ {8} &{17} \end{array}\right]=K\left[ \begin{array}{cc}{22} &{17}\\ {14} &{10} \end{array}\right](mod 26)$$
+                $$\left[ \begin{array}{cc}{16} &{7}\\ {8} &{17} \end{array}\right]=K\left[ \begin{array}{cc}{22} &{17}\\ {14} &{10} \end{array}\right](\bmod 26)$$
 
                 $
                     \because \left[ \begin{array}{cc}{22} &{17}\\ {14} &{10}\end{array}\right]=-18, (-18, 26)\neq 1
@@ -844,14 +844,14 @@
                 $$\left[ \begin{array}{cc}{7} &{24}\\ {17} &{1} \end{array}\right]=K\left[ \begin{array}{cc}{17} &{4}\\ {10} &{17} \end{array}\right]$$
 
                 $
-                    \because \left| \begin{array}{cc}{17} &{4}\\ {10} &{17} \end{array}\right|=249, 249\times 7\equiv 1(mod 26)
+                    \because \left| \begin{array}{cc}{17} &{4}\\ {10} &{17} \end{array}\right|=249, 249\times 7\equiv 1(\bmod 26)
                         \therefore (detA)^{-1}=7
                 $容易算出
                 $$
                 \begin{aligned}
                     \left[ \begin{array}{cc}{17} &{-4}\\ {-10} &{17} \end{array}\right]=7\times \left[ \begin{array}{cc}{17} &{-4}\\ {-10} &{17} \end{array}\right]
                             &=\left[ \begin{array}{cc}{119} &{28}\\ {-70} &{119} \end{array}\right]\\
-                                &\equiv \left[ \begin{array}{cc}{15} &{24}\\ {8} &{15} \end{array}\right](mod 26)
+                                &\equiv \left[ \begin{array}{cc}{15} &{24}\\ {8} &{15} \end{array}\right](\bmod 26)
                 \end{aligned}
                 $$
 
@@ -860,7 +860,7 @@
                 \begin{aligned}
                     K=\left[ \begin{array}{cc}{7} &{24}\\ {17} &{1} \end{array}\right]\left[ \begin{array}{cc}{15} &{24}\\ {8} &{15} \end{array}\right]
                             &=\left[ \begin{array}{cc}{297} &{528}\\ {263} &{423} \end{array}\right]\\
-                                &\equiv \left[ \begin{array}{cc}{11} &{8}\\ {3} &{7} \end{array}\right](mod 26)
+                                &\equiv \left[ \begin{array}{cc}{11} &{8}\\ {3} &{7} \end{array}\right](\bmod 26)
                 \end{aligned}
                 $
 

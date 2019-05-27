@@ -1,0 +1,826 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % use normalem to protect \emph
+\newcommand\hl{\bgroup\markoverwith
+  {\textcolor{yellow}{\rule[-.5ex]{2pt}{2.5ex}}}\ULon}
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+
+\begin{document}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 公开钥密码诞生之前, 所有的传统密码都属于\hl{单钥密码体制}, 及\hl{加密钥}和\hl{解密钥}相同
+        \item 单密钥算法可以分为两大类:
+        \begin{itemize}
+            \item \hl{一次一位}地对明文进行操作和运算, 称为\hl{序列密码}或\hl{流密码}.
+            \item \hl{一次若干位一组}地对明文进行操作和运算, 称为\hl{分组密码}.
+            \item 在计算机上实现的分组密码算法, 以往通常选64位(足以应付密码分析, 又便于操作和运算); 现在往往选128位.
+        \end{itemize}
+        \item 1977年美国国家标准局(NIST)公布了IBM公司研制的一种加密算法, 作为\hl{非机要部门}使用的数据加密标准(DES): Data Encryption Standard.
+        \item DES自公布以来, 一直是\hl{国际商用通信}和\hl{计算机通信}最常用的加密算法, 原定使用期位10年, 超期服役到2000年.
+        \item 1990's, 以色列密码学家Shamir等人提出一种"差分分析法", 日本人也提出类似方法, 对DES构成威胁.
+        \begin{itemize}
+            \item DES提出不久, 有人提出借助\hl{硬件设备}实现对所有密钥的遍历搜索. 电子技术的发展, 是这种设备的造价大大降低, 速度大大提高.
+            \item DES的弱点是: 密钥太短, 实际为56位.
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{Feistel加密算法}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item Feistel网络是一种乘积型加密算法, 已成为一种有效的构造密码方法. DES即是Feistel网络的一种实现.
+
+        Shannon曾建议交替使用\hl{搅乱}和\hl{扩散}方法设计密码.
+        \begin{itemize}
+            \item 搅乱: 即打乱明文, 使密文和明文的统计关系尽可能复杂化.
+            \item 扩散: 使密文和密钥的关系变得毫无统计规律, 扩大密钥对明文的影响.
+        \end{itemize}
+
+        \item Feistel网络是将明文分成$L_0$和$R_0$两部分, 各b$bit$, 经过n轮迭代, 最后归并成\hl{密文块}.
+        \item 第i轮的输入为$L_{i-1}$和$R_{i-1}$(前一轮的输出), 输出为$L_i$和$R_i$. 流程图见4.1
+        \item 各轮结构相同, 单子密钥$k_i$不同, 由密钥k产生.
+        \item 若密文为C, \hl{加密过程}可表示为
+        $$C=F(m)$$
+        或者
+        $$F(m)=C=\underbrace{(F_n)}_{\mbox{第n轮}}\underbrace{(IF_{n-1})}_{\mbox{第n-1轮}}\cdots \underbrace{(IF_2)}_{\mbox{第2轮}}\underbrace{(IF_1)}_{\mbox{第1轮}}(m)$$
+        其中
+        $$
+        \left\{ \begin{aligned}
+            &F_i(L_i, R_i)=[L_{i-1}\oplus f(R_{i-1}, k_i), R_i], i=1,2,\cdots,n\\
+            &I(L,R)=(R,L)
+        \end{aligned}\right.
+        $$
+        $f(R_{i-1}, k_i)$称为轮函数, $k_i$是子密钥.
+        \item 解密过程与加密过程类似, 只是要将密钥的顺序颠倒过来, 即
+        $$m=F^{-1}(C)=(F_1)(IF_2)(IF_3)\cdots (IF_{n-1})(IF_n)(C)$$
+    \end{itemize}
+
+    \subsection{数据加密标准DES}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item DES的完整描述: 利用长度为56的密钥比特串加密长度加密长度为64位的明文比特串, 从而得到长度为64位的密文比特串.
+        \item 加密时, 先进行初始置换IP的处理, 在进行一系列运算, 然后进行逆初始置换$IP^{-1}$给出加密结果.
+        \item 与密钥有关的算法包括: 一个加密函数$f$和密钥编排函数$KS$.
+        \item DES加密的框架为:
+        \begin{enumerate}
+            \renewcommand\labelenumi{(\theenumi)}
+            \item 初始置换IP: 把明文顺序打乱重排, 置换输出为64位, 数据置换后的第一位, 第二位分别为原来的58位, 50位.
+            \item 将置换输出的64位数据分成\hl{左右两半}, 左一半称为$L_0$, 右一半称为$R_0$, 各32位.
+            \item 计算函数的16轮迭代.
+            \begin{itemize}
+                \item 第1轮\hl{加密迭代}: 左半边输入$L_0$, 右半边输入$R_0$; 由加密函数f实现子密钥$K_1$对$R_0$的加密, 结果为32为数据组$f(R_0, K_1), f(R_0, K_1)$与$L_0$模2相加(异或), 得到一个32位数据组$L_0\oplus f(R_0, K_1)$.
+                \item 第2轮\hl{加密迭代}: 左半边输入$L_1=R_0$, 右半边输入$R_2=L_0\oplus f(R_0, K_1)$, 有加密函数$f$实现子密钥$K_2$对$R_1$的加密, 结果为32位数据组$f(R_1, K_2)$, $f(R_1, K_1)$与$L_1$模2相加, 得到一个32位数据组$L_1\oplus f(R_1, K_2)$.
+                \item 第3轮\hl{加密迭代}: 第三论加密迭代值第16轮加密迭代分别用子密钥$K_3, \cdots, K_16$进行, 其过程与第1次, 第2次加密迭代相同.
+                \item 加密过程用数学公式描述如下
+                $$
+                \left\{ \begin{aligned}
+                    &L_1=R_{i-1}\\
+                    &R_i=L_{i-1}\oplus f(R_{i-1}, K_i)\\
+                    &i=1,2,\cdots,16
+                \end{aligned}\right.
+                $$
+
+                \item $\oplus$表示按位做不进位加法运算, 即$1\oplus 0=0\oplus 1=1, 0\oplus0=1\oplus 1=0$
+                \item $L_{i-1}$和$R_{i-1}$分别是第$i-1$次迭代结果的左右两部分, 各32比特.
+                \item $K_i$是由64比特的密钥产生的\hl{子密钥}, 长度为 48比特.
+                \item $f$是将$32 bit$的输入转换为$32 bit$的输出. $f(R_{i-1}, K_i)$是DES加密算法的关键功能.
+            \end{itemize}
+            \item 最后一次的迭代$L_{16}$放在右边, $R_{16}$放在左边.
+            \item 再经过\hl{逆初始置换}$IP^{-1}$, 把数据打乱重排, 产生64位密文.
+        \end{enumerate}
+    \end{itemize}
+
+    \subsection{DES加密标准}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 假定明文m是0和1组成的长度为$64bit$的符号串, 密钥k也是0和1组成的$64bit$的符号串.
+
+        设
+        $$
+        \left\{ \begin{aligned}
+            &m=m_1m_2m_3\cdots m_{64}\\
+            &k=k_1k_2k_3\cdots k_{64}
+        \end{aligned}\right.
+        , m_i, k_i=0,1; i=1,2,3,\cdots, 64
+        $$
+
+        \item 密钥k只有$56bit$有效, 其中$k_8, k_{16}, k_{24}, k_{32}, k_{40}, k_{56}, k_{64}$这八位数是奇偶校验位, 在算法中不起作用. DES加密过程如下:
+        $$DES(m)=IP^{-1}\cdot T_{16}\cdot T_{15}\cdots T_2\cdot T_1\cdot IP(m)$$
+        其中, IP为初始置换, $IP^{-1}$为逆初始置换.
+        \begin{itemize}
+            \item 初始置换IP可表示为:
+            设$m=m_1m_2\cdots m_{{64}}$, $\widetilde{m}=\widetilde{m_1}\widetilde{m_2}\cdots \widetilde{m_{64}}$
+            经IP初始置换得到 $\widetilde{m}=\widetilde{m_{58}}\widetilde{m_{50}}\widetilde{m_{42}}\cdots \widetilde{m_{23}}\widetilde{m_{15}}\widetilde{m_7}$,
+            即$\widetilde{m_1}=m_{58}, \widetilde{m_2}=m_{50}, \cdots, \widetilde{m_{63}}=m_{15}, \widetilde{m_{64}}=m_7$
+
+            m经过IP初始置换$\widetilde{m}$, 其$\widetilde{m_i}(i=1,2,3,\cdots, 64)$的下标依次如下表所示
+
+            \begin{table}[h]  %table 里面也可以嵌套tabular,只有tabular是不能加标题的
+            \centering  %表格居中
+            \caption{IP置换}  %表格标题
+                \begin{tabular}{|c|c|c|c|c|c|c|c|c|}  %右对齐
+                    \hline
+                    58 &50 &42 &34& 26 &18 &10 &2\\
+                    \hline
+                    60 &52 &44 &36 &28 &20&12 &4\\
+                    \hline
+                    62 &54 &46 &38 &30 &22 &14 &6\\
+                    \hline
+                    64 &56 &48 &40 &32 &24 &16 &8\\
+                    \hline
+                    57 &49 &41 &33 &25 &17 &9 &1\\
+                    \hline
+                    59 &51 &43 &35 &27 &19 &11 &3\\
+                    \hline
+                    61 &53 &45 &37 &29 &21 &13 &5\\
+                    \hline
+                    63 &55 &47 &39 &31 &23 &15 &7\\
+                    \hline
+                \end{tabular}
+            \end{table}
+            \item 逆初始置换$IP^{-1}$可表示为:
+
+            设$\widetilde{m}=\widetilde{m_1}\widetilde{m_2}\cdots \widetilde{m_{64}}, m=m_1m_2\cdots m_{64}$
+            经过逆初始置换$IP^{-1}$得到
+            $$m=\widetilde{m_{40}}\widetilde{m_8}\widetilde{m_{48}}\cdots \widetilde{m_{17}}\widetilde{m_{57}}\widetilde{m_{25}}$$
+
+            即
+            $$m_1=\widetilde{m_{40}}, m_2=\widetilde{m_8}, m_3=\widetilde{m_{48}}, \cdots, m_{63}=\widetilde{m_{57}}, m_{64}=\widetilde{m_{25}}$$
+            $\widetilde{m}$经过$IP^{-1}$逆初始置换为m, 其$m_i(i=1,2,\cdots, 64)$的下标依次如下表所示
+
+            \begin{table}[h]  %table 里面也可以嵌套tabular,只有tabular是不能加标题的
+            \centering  %表格居中
+            \caption{$IP^{-1}$置换}  %表格标题
+                \begin{tabular}{|c|c|c|c|c|c|c|c|c|}  %右对齐
+                    \hline
+                    40 &8 &48 &16 &56 &24 &64 &32\\
+                    \hline
+                    39 &7 &47 &15 &55 &23 &63 &31\\
+                    \hline
+                    38 &6 &46 &14 &54 &22 &62 &30\\
+                    \hline
+                    37 &5 &45 &13 &53 &21 &61 &29\\
+                    \hline
+                    36 &4 &44 &12 &52 &20 &60 &28\\
+                    \hline
+                    35 &3 &43 &11 &51 &19 &59 &27\\
+                    \hline
+                    34 &2 &42 &10 &50 &18 &58 &26\\
+                    \hline
+                    33 &1 &41 &9  &49 &17 &57 &25\\
+                    \hline
+                \end{tabular}
+            \end{table}
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{子密钥的生成(密钥编排函数KS算法)}
+    \begin{itemize}
+        \item K的长度为64位的比特串, 其中56位是密钥, 8位是\hl{奇偶校验位}, 分别在$8,16,\cdots, 64$上
+        \item \hl{奇偶校验位}的比特由每个字节包含奇数个1定义, 在密钥编排的计算中这些奇偶校验位可以忽略.
+        \item 64位密钥经过\hl{置换选择1、循环左移、置换选择2}等变换, 产生\hl{16}个子密钥.
+        \begin{enumerate}
+            \renewcommand\labelenumi{(\theenumi)}
+            \item 置换选择1(PC-1)
+            \begin{itemize}
+                \item 从64位密钥中\hl{去掉}8个奇偶校验位.
+                \item 将其余56位数据打乱重排, 且将前28位作为$C_0$, 后28位作为$D_0$.
+                \item 置换选择1列于下表
+                \begin{table}[h]
+                    \centering  %表格居中
+                    \caption{置换选择1(PC-1)[56位]}  %表格标题
+                        \begin{tabular}{|c|c|c|c|c|c|c|c|}  %右对齐
+                            \hline
+                            57 &49 &41 &33 &25 &17 &9\\
+                            \hline
+                            1 &58 &50 &42 &34 &26 &18\\
+                            \hline
+                            10 &2 &59 &51 &43 &35 &27\\
+                            \hline
+                            19 &11 &3 &60 &52 &44 &36\\
+                            \hline
+                            63 &55 &47 &39 &31 &23 &15\\
+                            \hline
+                            7 &62 &54 &46 &38 &30 &22\\
+                            \hline
+                            14 &6 &61 &53 &45 &37 &29\\
+                            \hline
+                            21 &13 &5 &28 &20 &12 &4\\
+                            \hline
+                        \end{tabular}
+                \end{table}
+            \end{itemize}
+            \item 循环左移
+            \begin{itemize}
+                \item 对于$1\le j\le 16$, 需要计算
+                $$
+                \left\{ \begin{aligned}
+                    &C_i=LS_i(C_{i-1})\\
+                    &D_i=LS_i(D_{i-1})
+                \end{aligned}\right.
+                $$
+                \item $LS_i$表示\hl{循环左移}一个或两个位置, 这取决于i值, 如果$i=1,2,9,16$, 则移动一个位置, 否则移动两个位置.
+                \item 循环左移
+                \begin{table}
+                    \centering
+                    \caption{循环左移位数对照表}
+                    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                        \hline
+                        迭代顺序 &1 &2 &3 &4 &5 &6 &7 &8 &9 &10 &10 &11 &12 &13 &14 &15 &16\\
+                        \hline
+                        左移顺序 &1 &1 &2 &2 &2 &2 &2 &2 &1 &2 &2 &2 &2 &2 &2 &2 &1\\
+                        \hline
+                    \end{tabular}
+                \end{table}
+
+                设$C_1=c_1c_2\cdots c_{28}, D_i=d_1d_2\cdots d_{28}$
+
+                第二轮迭代, 应该循环左移1位, 则有
+                $$C_2=c_2c_3\cdots c_{28}c_1, D_2=d_2d_3\cdots d_{28}d_1$$
+
+                第三轮迭代, 因该循环左移2位, 则有
+                $$C_3=c_4c_5\cdots c_{28}c_1c_2c_3, D_3=d_4d_5\cdots d_{28}d_1d_2d_3$$
+            \end{itemize}
+
+            \item 置换选择2(PC-2)
+            \begin{itemize}
+                \item 置换选择2是从$C_i$和$D_i$(共56位)中选择出一个48位的\hl{子密钥}$K_i$,
+                \item 置换选择2列于如下表
+                \begin{table}[h]
+                    \centering
+                    \caption{置换选择2(PC-2)[48位]}
+                    \begin{tabular}{|c|c|c|c|c|c|}
+                        \hline
+                        14 &17 &11 &24 &1 &5\\
+                        \hline
+                        3 &28 &15 &6 &21 &10\\
+                        \hline
+                        23 &19 &12 &4 &26 &8\\
+                        \hline
+                        16 &7 &27 &20 &13 &2\\
+                        \hline
+                        41 &52 &31 &37 &47 &55\\
+                        \hline
+                        30 &40 &51 &45 &33 &48\\
+                        \hline
+                        44 &49 &39 &56 &34 &53\\
+                        \hline
+                        46 &42 &50 &36 &29 &32\\
+                        \hline
+                    \end{tabular}
+                \end{table}
+            \end{itemize}
+
+            \item 加密函数$f$
+            \begin{itemize}
+                \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+                \item 加密函数$f$的作用是\hl{在第i次加密迭代中用于子密钥}$K_i$对$R_{i-1}$进行加密
+
+                过程如下:
+                \begin{itemize}
+                    \item 在第i次加密迭代中\hl{选择运算E}对32位的$R_{i-1}$的各位进行选择和排列, 产生一个48位的结果(1);
+                    \item 结果(1)与子密钥$K_i$模2相加, 送入\hl{选择函数S}, 得到一个32位的数据组(结果(2));
+                    \item 结果(2)经过\hl{置换P}运算, 将其各位打乱重排, 最后的输出为加密函数的输出$f(R_{i-1}, K_i)$.
+                \end{itemize}
+
+                [1]选择运算E
+                \begin{itemize}
+                    \item E的作用是将32位的$R_{i-1}$\hl{输入扩展}为$48bit$的输出. 输出$48bit$的下标如下表所示.
+                    \item 扩展: $E(R_{i-1})$由$R_{i-1}$中的$32bit$以特定方式排列产生, 其中16个比特出现两次
+                \end{itemize}
+                \begin{table}[h]
+                    \centering
+                    \caption{E的选位表}
+                    \begin{tabular}{|c|c|c|c|c|c|}
+                        \hline
+                        32 &1 &2 &3 &4 &5\\
+                        \hline
+                        4 &5 &6 &7 &8 &9\\
+                        \hline
+                        8 &9 &10 &11 &12 &13\\
+                        \hline
+                        12 &13 &14 &15 &16 &17\\
+                        \hline
+                        16 &17 &18 &19 &20 &21\\
+                        \hline
+                        20 &21 &22 &23 &24 &25\\
+                        \hline
+                        24 &25 &26 &27 &28 &29\\
+                        \hline
+                        28 &29 &30 &31 &32 &1\\
+                        \hline
+                    \end{tabular}
+                \end{table}
+            \end{itemize}
+
+            [2] 选择函数数组S
+            \begin{itemize}
+                \item 选择函数组由8个\hl{选择函数}, 分别记为$S_1, S_2, S_3, S_4, S_5, S_6, S_7, S_8$.
+                \item 选择函数组的输入是一个48位的数据组, 从第1位到第48位依次加到$S_1\sim S_8$的输入端.
+                \item 每个选择函数有6个输入, 4个输出.
+                \item 每个选择函数都由一个\hl{选择矩阵}(见上表)规定了其输出和输入的选择原则.
+                \item 选择矩阵为4行16列, 每行都由$0\sim 15$组成, 但每行的数字排列都不同
+                \item 8个选择矩阵\hl{各不相同}
+                \item 每个选择函数6位输入组成一个6位\hl{二进制数字组}.
+                \item \hl{选择规则}:
+                \begin{itemize}
+                    \item 行号: 输入二进制数字组的第1和第6两位组成的二进制数值
+                    \item 列号: 其余4位组成的二进制数值
+                    \item 处在被选中的\hl{行和列交点处的数字}便是选择函数的输出(以\hl{二进制形式}输出).
+                \end{itemize}
+            \end{itemize}
+
+            例如: 对于$S_1$, 设输入为$101011$ 求$S_1$的输出
+            \begin{itemize}
+                \item 行号: 第1位和第6位组成$11=(3)_{10}$, 表示选中$S_1$的标号为3的那一行
+                \item 列号: 其余4为组成$0101=(5)_{10}$, 表示选中$S_1$的标号为5的那一列
+                \item 得到交点处的数字: 查询选择矩阵得到输出数字为9, 即$(1001)_2$.
+            \end{itemize}
+
+
+            [3] 置换P
+            \begin{itemize}
+                \item 把选择函数输出的32位结果在打乱重排, 得到32位的加密函数$f$.
+                \item 经过置换P的顺序改变
+            \end{itemize}
+            \begin{table}[h]
+                \centering
+                \caption{置换P矩阵}
+                \begin{tabular}{|c|c|c|c|c|c|c|c|}
+                    \hline
+                    16 &7 &20 &21 &2 &8 &24 &14\\
+                    \hline
+                    29 &12 &28 &17 &32 &27 &3 &9\\
+                    \hline
+                    1 &15 &23 &26 &19 &13 &30 &6\\
+                    \hline
+                    5 &18 &31 &10 &22 &11 &4 &25\\
+                    \hline
+                \end{tabular}
+            \end{table}
+        \end{enumerate}
+    \end{itemize}
+
+    \subsection{DES加密举例}
+    加密明文$
+    \begin{aligned}
+        M&=00000001\; 00100011\; 01000101\; 01100111\\
+         &=10001001\; 10101011\; 11001101\; 11101111
+    \end{aligned}
+    $
+
+    密钥$
+    \begin{aligned}
+        K&=00010011\; 00110100\; 01010111\; 01111001\\
+         &=10011011\; 10111100\; 11011111\; 11110001
+    \end{aligned}
+    $
+
+    解: 明文M
+
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        1 &2 &3 &4 &5 &6 &7 &8 &9 &10 &11 &12 &13 &14 &15 &16\\
+        \hline
+        0 &0 &0 &0 &0 &0 &0 &1 &0 &0 &1 &0 &0 &0 &1 &1\\
+        \hline
+        17 &18 &19 &20 &21 &22 &23 &24 &25 &26 &27 &28 &29 &30 &31 &32\\
+        \hline
+        0 &1 &0 &0 &0 &1 &0 &1 &0 &1 &1 &0 &0 &1 &1 &1\\
+        \hline
+        33 &34 &35 &36 &37 &38 &39 &40 &41 &42 &43 &44 &45 &46 &47 &48\\
+        \hline
+        1 &0 &0 &0 &1 &0 &0 &1 &1 &0 &1 &0 &1 &0 &1 &1\\
+        \hline
+        49 &50 &51 &52 &53 &54 &55 &56 &57 &58 &59 &60 &61 &62 &63 &64\\
+        \hline
+        1 &1 &0 &0 &1 &1 &0 &1 &1 &1 &1 &0 &1 &1 &1 &1\\
+        \hline
+    \end{tabular}
+
+    密钥K
+
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        1 &2 &3 &4 &5 &6 &7 &8 &9 &10 &11 &12 &13 &14 &15 &16\\
+        \hline
+        0 &0 &0 &1 &0 &0 &1 &1 &0 &0 &1 &1 &0 &1 &0 &0\\
+        \hline
+        17 &18 &19 &20 &21 &22 &23 &24 &25 &26 &27 &28 &29 &30 &31 &32\\
+        \hline
+        0 &1 &0 &1 &0 &1 &1 &1 &0 &1 &1 &1 &1 &0 &0 &1\\
+        \hline
+        33 &34 &35 &36 &37 &38 &39 &40 &41 &42 &43 &44 &45 &46 &47 &48\\
+        \hline
+        1 &0 &0 &1 &1 &0 &1 &1 &1 &0 &1 &1 &1 &1 &0 &0\\
+        \hline
+        49 &50 &51 &52 &53 &54 &55 &56 &57 &58 &59 &60 &61 &62 &63 &64\\
+        \hline
+        1 &1 &0 &1 &1 &1 &1 &1 &1 &1 &1 &1 &0 &0 &0 &1\\
+        \hline
+    \end{tabular}
+
+    [1] IP置换(64位)
+    $$
+    \begin{aligned}
+        &\widetilde{m}=11001100000000001100110011111111\; 11110000101010101111000010101010\\
+        &L_0=11001100000000001100110011111111\\
+        &R_0=11110000101010101111000010101010
+    \end{aligned}
+    $$
+
+    [2] PC-1置换(56位)
+    $$
+    \begin{aligned}
+        &\widetilde{K}=11110000110011001011010101111\; 0101010101100110011110001111\\
+        &C_0=1111000011001100101010101111\\
+        &D_0=0101010101100110011110001111
+    \end{aligned}
+    $$
+
+    [3] 循环左移(LS)
+    \begin{table}
+        \centering
+        \caption{循环左移}
+        \begin{tabular}{|c|c|}
+            \hline
+            第1轮(左移一位) & $\begin{aligned} &C_1=1110000110011000010101011111\\ &D_1=1010101011001100111100011110 \end{aligned}$ \\
+            \hline
+            第2轮(左移一位) & $\begin{aligned} &C_2=1100001100110000101010111111\\ &D_2=0101010110011001111000111101 \end{aligned}$ \\
+            \hline
+            第3轮(左移二位) & $\begin{aligned} &C_3=0000110011000010101011111111\\ &D_3=0101011001100111100011110101 \end{aligned}$ \\
+            \hline
+            第4轮(左移二位) & $\begin{aligned} &C_4=0011001100001010101111111100\\ &D_4=0101100110011110001111010101 \end{aligned}$ \\
+            \hline
+            第5轮(左移二位) & $\begin{aligned} &C_5=1100110000101010111111110000\\ &D_5=0110011001111000111101010101 \end{aligned}$ \\
+            \hline
+            第6轮(左移二位) & $\begin{aligned} &C_6=0011000010101011111111000011\\ &D_6=1001100111100011110101010101 \end{aligned}$ \\
+            \hline
+            第7轮(左移二位) & $\begin{aligned} &C_7=1100001010101111111100001100\\ &D_7=0110011110001111010101010101 \end{aligned}$ \\
+            \hline
+            第8轮(左移二位) & $\begin{aligned} &C_8=0000101010111111110000110011\\ &D_8=1001111000111101010101010101 \end{aligned}$ \\
+            \hline
+            第9轮(左移一位) & $\begin{aligned} &C_9=0010101011111111000011001100\\ &D_9=0011110001111010101010101011 \end{aligned}$ \\
+            \hline
+            第10轮(左移二位) & $\begin{aligned} &C_{10}=1010101111111100001100110000\\ &D_{10}=1111000111101010101010101100 \end{aligned}$ \\
+            \hline
+            第11轮(左移二位) & $\begin{aligned} &C_{11}=1010111111110000110011000010\\ &D_{11}=1100011110101010101010110011 \end{aligned}$ \\
+            \hline
+            第12轮(左移二位) & $\begin{aligned} &C_{12}=1011111111000011001100001010\\ &D_{12}=0001111010101010101011001111 \end{aligned}$ \\
+            \hline
+            第13轮(左移二位) & $\begin{aligned} &C_{13}=1111111100001100110000101010\\ &D_{13}=0111101010101010101100111100 \end{aligned}$ \\
+            \hline
+            第14轮(左移二位) & $\begin{aligned} &C_{14}=1111110000110011000010101011\\ &D_{14}=1110101010101010110011110001 \end{aligned}$ \\
+            \hline
+            第15轮(左移二位) & $\begin{aligned} &C_{15}=1111000011001100001010101111\\ &D_{15}=1010101010101011001111000111 \end{aligned}$ \\
+            \hline
+            第16轮(左移一位) & $\begin{aligned} &C_{16}=1110000110011000010101011111\\ &D_{16}=0101010101010110011110001111 \end{aligned}$ \\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    [4] PC-2置换(48位)
+    由$C_1=1110000110011000010101011111, D_1=1010101011001100111100011110$, 及PC-2置换得到$K_1$,
+    由$C_2, D_2$即$PC_2$得到$K_2$, $\cdots$, 由$C_{16}, D_{16}$以及PC-2置换得到$K_{16}$
+
+    [5] E置换(48位)
+    由$R_0$即E置换得到$E(R_0)$,
+    同理得到$E(R_1),E(R_2), \cdots, E(R_{15})$
+
+    [6] $E(R_i)\oplus K_i$运算(48位)
+
+    [7] S盒输出(32位)
+
+    [8] P置换(32位)
+
+    [9] $L_i\oplus f(R_{i-1}, K_i)$运算(32位)
+
+    [10] 对$L_{16}, L_{17}$进行$IP^{-1}$置换
+
+    \subsection{DES解密过程}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 由于DES运算是对合运算, 所以其解密和加密共同用一个算法, 只是要将16轮的子密钥的\hl{使用顺序倒过来}, 即依次使用$K_{16}, K_{15}, \cdots, K_1$.
+        \item 解密时, 把\hl{64位的密文当作明文输入},第1轮的解密迭代使用子密钥$K_{16}$, 第2轮解密迭代使用子密钥$K_{15}$, $\cdots \cdots$, 第16轮的解密迭代使用子密钥$K_1$, 最后的输出便是64位明文.
+        \begin{itemize}
+            \item 解密过程中使用的数学公式如下
+            $$
+            \left\{
+            \begin{aligned}
+                &R_{i-1}=L_i\\
+                &L_{i-1}=R_i\oplus f(L_i, K_i)\\
+                &i=16,15,\cdots,1
+            \end{aligned}
+            \right.
+            $$
+            \item 加密过程用数学公式描述如下:
+            $$
+            \left\{ \begin{aligned}
+                &L_i=R_{i-1}\\
+                &R_i=L_{i-1}\oplus f(R_{i-1}, K_i)\\
+                &i=1,2,\cdots, 16
+            \end{aligned}\right.
+            $$
+        \end{itemize}
+    \end{itemize}
+
+    \subsection{DES的若干问题}
+    \begin{enumerate}
+        \renewcommand\labelenumi{(\theenumi)}
+        \item DES的特点
+        \begin{itemize}
+            \item DES的综合运用了置换、代替、代数等多种密码技术, 是一种\hl{乘积密码}
+            \item DES算法结构紧凑、条例清楚, 其运算为对合运算, 便于实现
+            \item DES使用了初始置换IP和逆初始置换$IP^{-1}$各1次, 置换$P$16次. 安排只用这三种置换的目的是把数据彻底打乱, 重排(扩展). 但在密码意义上作用不大, 因为这三种置换与密钥无关, 置换关系固定.
+            \item 算法中除选择函数组S是非线性变换外, 其余变换均为线性变换, 所以\hl{保密性的关键}是选择函数组S. S的本质是数据压缩(6位输入压缩成4位输出). 其输入任意改变数位, 输出至少变换2位. 因为算法中使用了16次迭代, 使得即使是\hl{改变明文或密钥的1位, 密文都会发生的32的变化}. 这种密文的每一位都与明文和密钥的每一位有着敏感而复杂的关系, 牵一发而动全身的现象称为\hl{雪崩现象}.
+            \item DES的子密钥的产生与使用很有特色, 确保了原密钥中的各位的使用次数基本上相等; 即56位密钥每一位的使用次数在$12\sim 15$次之间. 使得保密性进一步提高.
+        \end{itemize}
+        \item 弱密钥和半若密钥
+        \begin{itemize}
+            \item DES的64位密钥(有效位位56位)太短.
+            \item 在16次迭代中分别是\hl{不同的子密钥}确保了DES强度, 但实际上却存在者一些相互重合的子密钥, 称这些密钥位\hl{弱密钥}或\hl{半弱密钥}.
+            \item 称使16个子密钥全相同的密钥位弱密钥, 即$k_1=k_2=\cdots =k_{16}$. 4种弱密钥分别为$01=00000001, 1F=00011111, E0=11100000, FE=11111110, F1=11110001, 0E=00001110$
+            \item 称使16个子密钥部分相同的密钥为\hl{半弱密钥}.
+
+            若存在k和$k'$使得$DES_k(m)=DES^{-1}_{k'}(m)$, $DES_k[DES_{k'}(m)]=m$, k和$k'$构成半弱密钥.
+
+            半弱密钥由6对
+
+            \item 弱密钥或者半弱密钥的存在是DES的不足. 但由于弱密钥或半弱密钥的数量与密钥的总数相比是微不足道的, 所以对DES并不构太大威胁
+        \end{itemize}
+        \item DES存在互补对称性
+        \begin{itemize}
+            \item 设$C=DES(M, K)$, 则$\overline{C}=DES(\overline{M}, \overline{K})$, 其中$\overline{M}, \overline{K}, \overline{C}$表示M, K, C的非.
+            \item 互补对称性会使得DES在"选择明文攻击"下所需的工作量减半.
+            \item 产生互补对称性的原因是\hl{DES中两次使用}\mathcolorbox{red}{\oplus}\hl{运算}
+        \end{itemize}
+        \item DES的安全性
+        \begin{itemize}
+            \item 虽然DES的描述相当长, 但能以\hl{软件或硬件的方式}非常有效的实现. 所需完成的算术成本仅是比特串的异或. 扩展函数E,S盒, 置换IP和$IP^{-1}$以及$K_1, K_2, \cdots, K_{16}$的计算都能在一个固定时间内通过查表(以软件)或者电路布线完成.
+            \item 正式颁布后, 世界各国的许多公司都推出了自己实现的软硬件产品.
+            \item DES的密钥空间为$2^{56}\approx 7\times 10^6$, 对实现真正的安全而言太小. 对于"已知明文的攻击", 已经开发出了各种专用机器用于对密钥的\hl{穷举搜索}.
+            \item \hl{穷举搜索}即给定的64比特的明文M和相应的的密文C, 测试每一个可能的密钥K, 直到找到密钥满足$E(M, K)=C$为止, 同时注意可能有多个这样的密钥K.
+            \item 1977年, DH已经建议制造一个一秒能测试$10^6$个密钥的芯片.
+            \item 每秒能测试$10^6$个密钥的机器大约需要一天就可以搜索整个密钥空间, 制造这样的机器需要\dots
+            \item 1990年EA提出差分分析法使得选择明文攻击下的复杂度下降$O(2^{37})$
+            \item 1993年RM给出一种非常详细的密钥搜索机器的设计方案.3.5个小时左右平均搜索时间
+        \end{itemize}
+    \end{enumerate}
+
+    \subsection{IDEA密码系统}
+    \begin{itemize}
+        \item PES: 第一版密码算法由中国薛和james提出, 于1990年公布
+        \item IPES: 1991年为抵抗差分分析法, 增强算法强度
+        \item IDEA: 1992年改名为IDEA, 国际数据加密算法.
+        \item IDEA分组密码算法, \hl{明文块和密文}都是64位, \hl{密钥长度}为128比特. 其加密和解密算法相同, 但密钥各异.
+        \item IDEA\hl{的特点}是用软件或者硬件实现都不难, 加、解密运算速度非常快.
+        \item IDEA的加密算法的流程图
+        \begin{itemize}
+            \item 第一轮的输出四个子块: [11], [12], [13]和[14], 将中间的两个子块交换(最后一轮除外)后, 就是下一轮的输入.
+            \item 经过八轮运算后, 有一个最后的输出变换.
+
+            \quad [1] $X_1^{(9)}$和输出变换的第一个密钥子块$Z_1^{(9)}$相乘
+            \quad [2] $X_2^{(9)}$和输出变换的第二个密钥子块$Z_2^{(9)}$相乘
+            \quad [3] $X_3^{(9)}$和输出变换的第三个密钥子块$Z_3^{(9)}$相乘
+            \quad [4] $X_4^{(9)}$和输出变换的第四个密钥子块$Z_4^{(9)}$相乘
+
+            最后, 这四个子块连接到一起产生密文.
+        \end{itemize}
+    \end{itemize}
+
+    \begin{enumerate}
+        \item IDEA加密时, 一共有8轮迭代, 每轮需要6个子密钥, 最后一轮(输出变换)需要4个子密钥. 所以, 在整个加密过程中需要52个子密钥, 每个子密钥16比特.
+        \item 设密钥$K_1=k_1k_2\cdots k_{128}$, 将$K_1$分为8段, 依此得到
+        $$
+        \begin{aligned}
+            &Z_1^{(1)}=k_1k_2\cdots k_{16}, &Z_2^{(1)}=k_{17}k_{18}\cdots k_{32}\\
+            &Z_3^{(1)}=k_33k_34\cdots k_{48}, &Z_4^{(1)}=k_{49}k_{50}\cdots k_{64}\\
+            &Z_5^{(1)}=k_65k_66\cdots k_{80}, &Z_6^{(1)}=k_{81}k_{82}\cdots k_{96}\\
+            &Z_1^{(2)}=k_{97}k_{98}\cdots k_{112}, &Z_2^{(2)}=k_{113}k_{114}\cdots k_{128}\\
+        \end{aligned}
+        $$
+
+        即遣6个位第一轮迭代的子密钥块, 后2个为第二轮迭代6个子密钥块的前2个
+
+        \item 将$K_1$循环左移25位得到$K_2=k_{26}k_{27}\cdots k_{128}k_1K_2\cdots k_{24}k_{25}$, 再将$K_2$分为8段, 依此得到
+        $$
+        \begin{aligned}
+            &Z_3^{(2)}=k_{26}k_{27}\cdots k_{41}, &Z_4^{(2)}=k_{42}k_{43}\cdots k_{57}\\
+            &Z_5^{(2)}=k_{58}k_{59}\cdots k_{73}, &Z_6^{(2)}=k_{74}k_{75}\cdots k_{89}\\
+            &Z_1^{(3)}=k_{90}k_{91}\cdots k_{105}, &Z_2^{(3)}=k_{106}k_{107}\cdots k_{121}\\
+            &Z_3^{(3)}=k_{122}k_{123}\cdots k_{128}k_{1}k_{2}\cdots k_{9}, &Z_4^{(3)}=k_{10}k_{11}\cdots k_{25}\\
+        \end{aligned}
+        $$
+        即前4个为第二轮迭代6子密钥块的另外4个, 后4个为第三轮迭代6子密钥块的前4个
+
+        \item 将$K_2$继续左移25位得到$K_3=k_{51}k_{52}k_{53}\cdots k_{128}k_1k_2\cdots k_{49}k_{50}$, 可依此得到$Z_5^{(3)}, Z_6^{(3)}, Z_1^{(4)}, Z_2^{(4)}, Z_3^{(4)}, Z_4^{(4)}, Z_5^{(4)}, Z_6^{(4)}$.
+        \item 继续以上步骤, 直到产生52个子密钥为止.
+        \begin{table}[h]
+            \centering
+            \caption{IDEA算法加密密钥子块}
+            \begin{tabular}{|c|c|}
+                \hline
+                轮次 &加密密钥子块\\
+                \hline
+                1 &$Z^{(1)}_1, Z^{(1)}_2, Z^{(1)}_3, Z^{(1)}_4, Z^{(1)}_5, Z^{(1)}_6$\\
+                \hline
+                2 &$Z^{(2)}_1, Z^{(2)}_2, Z^{(2)}_3, Z^{(2)}_4, Z^{(2)}_5, Z^{(2)}_6$\\
+                \hline
+                3 &$Z^{(3)}_1, Z^{(3)}_2, Z^{(3)}_3, Z^{(3)}_4, Z^{(3)}_5, Z^{(3)}_6$\\
+                \hline
+                4 &$Z^{(4)}_1, Z^{(4)}_2, Z^{(4)}_3, Z^{(4)}_4, Z^{(4)}_5, Z^{(4)}_6$\\
+                \hline
+                5 &$Z^{(5)}_1, Z^{(5)}_2, Z^{(5)}_3, Z^{(5)}_4, Z^{(5)}_5, Z^{(5)}_6$\\
+                \hline
+                6 &$Z^{(6)}_1, Z^{(6)}_2, Z^{(6)}_3, Z^{(6)}_4, Z^{(6)}_5, Z^{(6)}_6$\\
+                \hline
+                7 &$Z^{(7)}_1, Z^{(7)}_2, Z^{(7)}_3, Z^{(7)}_4, Z^{(7)}_5, Z^{(7)}_6$\\
+                \hline
+                8 &$Z^{(8)}_1, Z^{(8)}_2, Z^{(8)}_3, Z^{(8)}_4, Z^{(8)}_5, Z^{(8)}_6$\\
+                \hline
+                输出变换 &$Z^{(9)}_1, Z^{(9)}_2, Z^{(9)}_3, Z^{(9)}_4$\\
+                \hline
+            \end{tabular}
+        \end{table}
+    \end{enumerate}
+
+    \subsection{IDEA密码的解密运算}
+    \begin{itemize}
+        \item IDEA的解密过程和加密过程完全一致, 只是\hl{解密用的子密钥块不同}.
+        \item 解密子密钥块中$Z^{-1}$表示$Z\bmod (2^{16}+1)$乘法的逆, 即
+        $$Z\odot Z^{-1}\equiv 1\bmod (2^{16}+1)$$, 即
+        $$Z+(-Z)\equiv 0\bmod 2^{16}$$
+    \end{itemize}
+
+    \subsection{IDEA密码分析}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 欲对IDEA的密钥进行穷举搜索需进行$2^{128}(10^{38})$次运算. 设计一个每秒能测试十亿个密钥的芯片, 并采用十亿片并行处理上述问题, 将花费$10^{12}$年.
+        \item 对IDEA使用强力攻击的另一个困难是其加密子密钥的产生比解密子密钥的产生快的多.
+        \item IDEA对低于差分分析密码分析也十分有效. 一般而言, 一个密码体制的迭代次数越多, 对它进行差分密码分析就越困难. Lai证明IDEA在他的8轮运算仅运行4轮后就对差分密码分析免疫了.
+        \item IDEA也有一组弱密钥(十六进制):
+        $0000,0000, 0F00, 0000, 0000, 000F, FFFF, F000$
+        在"F"位置上的数可以是任何数.
+    \end{itemize}
+
+    \subsection{FEAL密码}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 1987年日本学者清水明宏和宫口庄司在DES的基础上提出了一种\hl{快速数据加密算法}(Fast Data Encryption Algorithm), 简称FEAL.
+        \item FEAL的算法类似于DES, 但其每轮都比DES的强度大, 且因其轮次少, 因而运算速度较快.
+        \item FEAL和DES相比主要特点在于
+        \begin{enumerate}
+            \item 增大了有效密钥长度;
+            \item 增强了密钥的控制作用;
+            \item 增大了加密函数$f$的复杂性;
+            \item 减少了迭代次数
+        \end{enumerate}
+    \end{itemize}
+
+    FEAL的整体结构
+    \begin{enumerate}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item FEAL的整体结构与DES相似. 分组长度位64位, 算法面向二进制设计, 加密算法是对合运算. 64位明文在密钥的控制下, 经过\hl{初始运算、四次迭代、末尾运算}, 形成64位密文.
+    \end{enumerate}
+
+    FEAL的加密运算
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item 整个加密过程分为三个阶段
+    \end{itemize}
+    \begin{enumerate}
+        \renewcommand\labelenumi{(\theenumi)}
+        \item 64位明文分为左右两块, $L_0''=m_0m_1\cdots m_{31}, R_0''=m_{32}m_{31}\cdots m_{63}$
+        $$
+        \left\{ \begin{aligned}
+            &L_0'=L_0''\oplus (K_4, K_5)\\
+            &R_0'=R+0''\oplus (K_6, K_7)\\
+            &L_0=L_0'\\
+            &R_0=R_0'\oplus L_0'
+        \end{aligned}\right.
+        $$
+        \item 四次迭代
+        $$
+        \left\{ \begin{aligned}
+            &L_i=R_{i-1}\\
+            &R_i=L_{i-1}\oplus f(R_{i-1}, K_{i-1})
+        \end{aligned}\right.
+        i=1,2,3,4
+        $$
+        其中, $f$是加密函数
+
+        \item 末尾运算
+        $$
+        \left\{ \begin{aligned}
+            &R_4'=R_4'\\
+            &L_4'=L_4\oplus R_4\\
+            &R_4''=R_4'\oplus (K_8, K_9)\\
+            &L_4''=L_4'\oplus (K_{10}, K_{11})
+        \end{aligned}\right.
+        $$
+        将$R_4''$和$L_4''$合并形成最后的\hl{64位密文}
+
+    \end{enumerate}
+
+    子密钥产生算法
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item FEAL的密钥为64位, 全部为密钥位.
+        \item 由子密钥产生算法产生出$K_0, K_1, \cdots, K_{11}$共12个16位\hl{子密钥}, 用于加、解密运算. 子密钥产生算法
+        \begin{enumerate}
+            \item 64位密钥首先被分成为左右两半, 左边32位为$A_0$, 右边为$B_0$.
+            $$A_0=k_0k_1\cdots k_{31}, B_0=k_{32}k_{33}\cdots k_{63}$$
+            \item 引入中间变量D, 其初值为$D_0=0$.
+            \item 接连进行6次相同的产生子密钥的变换, \hl{每次变换}后将$B_i$分成左右两半, 便得到\hl{两个子密钥}
+
+            $$
+            \left. \begin{aligned}
+                &D_i=A_{i-1}\\
+                &A_i=B_{i-1}\\
+                &B_i=f_K(A_{i-1}, B_{i-1}\oplus D_{i-1})=(K_{2i-2}, K_{2i-1})
+            \end{aligned}\right\}
+            i=1,2,\cdots, 6
+            $$
+
+            其中, $f_K$为\hl{子密钥生成服务函数}
+        \end{enumerate}
+    \end{itemize}
+
+    \subsection{服务函数}
+    \begin{itemize}
+        \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+        \item FEAL使用了两个服务函数: \hl{加密函数}$f$和\hl{子密钥产生函数}$f_K$. 它们为FEAL提供了非线性, 是确保FEAL安全的关键.
+        \begin{enumerate}
+            \item 移位函数S
+            \begin{itemize}
+                \item 加密函数$f$和子密钥产生函数$f_K$都使用了一个辅助函数: \hl{移位函数S}.
+                    \item 移位函数$S(x_1, x_2, \delta)$是一个字节函数, 其自变量$x_1$和函数值$x_2$均为一个字节量. 移位函数S用于实现字节加法($\bmod 256$).循环左移运算, 其定义为:
+                    $$
+                    \begin{aligned}
+                        &S(x_1, x_2, \delta)=R(W)\\
+                        &W=(x_1+x_2+\delta)(\bmod 256), \delta=0\mbox{或1}
+                    \end{aligned}
+                    $$
+
+                    其中$R(W)$表示把W循环左移两位.
+            \end{itemize}
+        \end{enumerate}
+    \end{itemize}
+
+    \subsection{加密函数f}
+    \begin{itemize}
+        \item 加密函数$f(\alpha, \beta)$是多字节函数, 其中自变量$\alpha$是4字节变量, $\beta$是2字节变量, 结果为4字节变量
+        \item 若用符号$f_i$表示多字节量$f$的第i个字节, 则$f(\alpha, \beta)$定义如下:
+        $$
+        \begin{aligned}
+            &g_1=\alpha_1\oplus \beta_0\oplus \alpha_0\\
+            &g_2=\alpha_2\oplus \beta_1\oplus \alpha_3\\
+            &f_1=S(g_1, g_2, 1)\\
+            &f_2=S(a_2, f_1, 0)\\
+            &f_3=S(a_3, f_1, 1)\\
+            &f_0=S(a_0, f_1, 0)
+        \end{aligned}
+        $$
+    \end{itemize}
+
+    \section{FEAL解密过程}
+    \begin{itemize}
+        \item FEAL的加密运算为对合运算, 故其解密运算和加密运算共用一个算法, 但解密过程中的子密钥使用顺序与加密相反, 这一点与DES类似.
+        \item FEAL的解密过程如下:
+        $$
+        \begin{aligned}
+            &L_4'=L_4''\oplus (K_{10}, K_{11})\\
+            &R_4'=R_4''\oplus (K_{8}, K_{9})\\
+            &\left. \begin{aligned} &R_{i-1}=L_i\\ &L_{i-1}=R_i\oplus f(L_i, K_{i-1}) \end{aligned} \right\}\;i=4,3,2,1\\
+            &R_0'=R__0\oplus L_0\\
+            &L_0'=L_0\\
+            &R_0''=R_0'\oplus (K_6, K_7)\\
+            &L_0''=L_0'\oplus (K_4, K_5)\\
+        \end{aligned}
+        $$
+    \end{itemize}
+
+    \subsection{FEAL和DES的比较}
+    \begin{itemize}
+        \item FEAL和DES都是分组密码, 分组长度为64位
+        \item FEAL和DES的加、解密运算都是对合运算
+        \item FEAL和DES的密钥均为64位. 但DES的有效密钥位56位, 且因为DES具有互补对称性, 又使其有效密钥空间缩小为$2^{55}$. FEAL的有效密钥长度为64位, 且不有互补对称性, 有效密钥空间为$2^{64}$, 抗穷举密钥性能大大提高.
+        \item DES得初始置换IP和逆初始置换$IP^{-1}$\hl{与密钥无关}, 故密钥意义不大, FEAL的初始置换与末尾变换均受\hl{密钥控制}, 因而提高了保密性.
+        \item DES使用的变换主要是置换、代替和模2相加, 其中的\hl{非线性仅由S盒提供}. FEAL使用的变换主要是循环移位、$\bmod 256$相加和模2相加, 其\hl{非线性由S函数提供}.
+    \end{itemize}
+
+    \section{分组密码的应用技术}
+    \subsection{分组密码的工作方式}
+    \begin{enumerate}
+        \item 电子密码本模式(ECB)
+        \begin{itemize}
+            \item 直接利用分组密码对明文的各分组进行加密.
+            设明文$M=M_1M_2\cdots M_n$, 相应的密文$C=C_1C_2\cdots C_n$,
+
+            其中$C_i=E(M_i, K), i=1,2,\cdots, n$.
+            \item
+        \end{itemize}
+
+    \end{enumerate}
+\end{document}

@@ -1,0 +1,340 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % use normalem to protect \emph
+\newcommand\hl{\bgroup\markoverwith
+  {\textcolor{yellow}{\rule[-.5ex]{2pt}{2.5ex}}}\ULon}
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+\newtheorem{theorem}{\hspace{2em}定理}[section]
+\newtheorem{definition}{\hspace{2em}定义}[section]
+\newtheorem{corollary}{\hspace{2em}推论}[section]
+\newtheorem{proof}{\hspace{2em}证明}[section]
+
+\begin{document}
+\section{密码体制的概率分布}
+\underline{有关约定}:
+\begin{itemize}
+    \item 待加密后发送的所有可能消息的集合称为\hl{明文空间}, 常用M来表示
+    \item 所有密文的集合称为\hl{密文空间}, 常用C表示
+    \item 所有密钥的集合称为\hl{密钥空间}, 常用K表示
+
+    实际上, M,C和K都是有限集. 算法确定后, 对于给定的$m\in M, k\in K$, 则\hl{密文c唯一确定}, 即$c=E(m, k)$或$c=E_k(m)$, E是加密变换.
+
+    \begin{definition}
+      假设X与Y是随机变量, 一般的,
+
+      用$P(x)$表示X取值为x的概率, 即$P(x)=P{X=x}$,
+
+      用$P(y)$表示Y取值为y的概率, 即$P(y)=P{Y=y}$
+
+      用$P(x,y)$表示X取值为x的概率且Y取值为y的概率集合, 即
+      $$P(x, y)=P{X=x, Y=y}$$
+
+      用$P(x|y)$表示当Y取值为y时X取值为x的条件概率
+    \end{definition}
+    \item 用$P(x,y)=P(x)P(y)$对所有可能的X的取值为x和Y取值为y成立, 则称随机变量X和Y是相互独立的.
+    \item 联合概率和条件概率的关系: $P(x, y)=P(x)P(y|x)=P(y)P(x|y)$
+
+    \begin{theorem}{贝叶斯定理}
+      如果$P(y)>0$, 那么$P(x|y)=\frac{P(x)P(y|x)}{P(y)}$
+    \end{theorem}
+
+    \begin{proof}
+      设x与y是相互独立的随机变量, 当且仅当对所有的x和y有$P(x|y)=P(x)$
+    \end{proof}
+
+    \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+    \item 如果给定一个密码体制, 则关于他的明文,密文与密钥的联合概率分布为$P(m,c,k)$
+    \item 由给定的密码体制的联合概率分布可以确定该体制的各种\hl{边际分布}和\hl{条件分布}, 并由此确定一些列信息的度量
+    \item 常用边际分布与条件分布如下:
+    \begin{itemize}
+      \item \hl{明文与密钥}的联合概率分布为:
+      $$P(m, k)=\sum\limits_{c\in C} P(m,c,k), m\in M, k\in K$$
+      \item \hl{明文与密文}的联合概率分布为
+      $$P(m, c)=\sum\limits_{k\in K} P(m,c,k), m\in M, c\in C$$
+      \item 明文的概率分布为
+      $$P(m)=\sum\limits_{k\in K} P(m, k), m\in M$$
+      \item 密钥的概率分布为
+      $$P(k)=\sum\limits_{m\in M} P(m, k), k\in K$$
+      \item 密文的概率分布为
+      $$P(c)=\sum\limits_{m\in M}P(m, c), c\in C$$
+    \end{itemize}
+
+    \item 由联合概率分布与边际分布产生的\hl{条件概率分布}为
+    \begin{itemize}
+      \item 密文关于\hl{明文和密钥}的条件概率分布为
+      $$P(c|m,k)=\frac{P(m,k,c)}{P(m,k)}$$
+      \item 密文关于明文的条件概率分布为
+      $$P(c|m)=\frac{P(m,c)}{P(m)}$$
+      \item 明文关于密文的条件概率分布为
+      $$P(m|c)=\frac{P(m,c)}{P(c)}$$
+      \item 密钥关于密文的条件概率分布为
+      $$P(k|c)=\frac{P(k,c)}{P(c)}$$
+    \end{itemize}
+    \item 上述分布反映了密码体制中的\hl{数据结构关系}.
+\end{itemize}
+
+\subsection{熵}
+\begin{itemize}
+  \item 从密码分析者的角度看, 明文无\hl{不确定性}, 密文则不然. 密文的\hl{不确定性}程度随着密码分析的进行而逐渐减小, 直至完全确定.
+  \item 不同的密码, 强度也不同; 而使用相同密钥加密的明文越多, 越有利于密码分析者进行"唯密文攻击".
+  \item 研究密文不确定性为难题的\hl{基本工具时熵的思想}, "熵"是香浓在1948年在密码学中引进信息论时用到的概念.
+  \item \hl{熵}被认为是信息的\hl{数学测度或者不确定性}, 可以作为概率分布的函数进行计算, 即假定一个随机变量X, 根据概率分布在一个有限集合上取值, 即
+  $$P\{X=x\}=P_i, i=1,2,3\cdots, n$$
+  根据分布发生的事件所获得信息是什么, 或事件还没有发生, 有关\hl{这个结果的不确行性}是什么, 这个量称为X的熵, 表示为$H(x)$.
+\end{itemize}
+\begin{definition}
+  设X是一个随机变量, 他根据概率分布在一个有限集合上取值, 即$P{X=x}=P_i, i=1,2,\cdots, n$, 那么这个概率分布的熵定义为
+  $$H(X)=-\sum\limits_{i=1}^n P_ilbP_i$$
+  式中$lbx=\log_2^x$
+\end{definition}
+
+说明:
+\begin{itemize}
+  \item 尽管$\lim\limits_{x\rightarrow 0}xlbx=0$, 即允许$x=0$, 但因为在熵的定义中, 当$P_i=0$时,$lbP_i$无定义, 所以假设上述定义中所有$P_i\neq 0$.
+  \item 熵定义中对数的底通常用2, 因为$lbP_i=-\log_aP_i\cdot lba$(其中a为常数), 所以计算熵时, 若改变对数的底, 熵的值只相差一个常数因子.
+  \item 如果对$1\le i\le n$, 有$P_i=\frac{1}{n}$, 那么有$H(x)=lbn$
+  \item $H(x)\ge 0$和$H(x)=0$当且仅当对某一个i有$P_i=1$, 并且对所有的$i\neq j$有$P_j=0$
+\end{itemize}
+
+\begin{theorem}
+  对随机变量X, X的概率分布$P{X=x}=P_i, i=1,2,\cdots, n$, X的熵的基本性质为$0\le H(X)\le lbn$
+\end{theorem}
+
+由上述定理可知, 当$P_1=P_2=\cdots =P_n=\frac{1}{n}$时, 随机变量的熵取最大值, 即当各结果等概率时不确定性达到最大, 最难做出预测.
+\begin{itemize}
+  \renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+  \item 一个密码体制\hl{各个组成部分的熵}:
+  \begin{itemize}
+    \item \hl{密钥}概率分布相关的熵为
+    $$H(K)=-\sum\limits_{k\in K} P(k)lbP(k)$$
+    \item \hl{明文}概率分布相关的熵为
+    $$H(M)=-\sum\limits_{m\in M} P(m)lbP(m)$$
+    \item \hl{密文}概率分布相关的熵为
+    $$H(C)=-\sum\limits_{c\in C} P(c)lbP(c)$$
+    \item 明文和密文联合概率分布相关的熵为
+    $$H(M,C)-\sum\limits_{m\in M}\sum\limits_{c\in C}P(m,c)lbP(m,c)$$
+  \end{itemize}
+\end{itemize}
+
+例如: 令$M=\{a,b\}$, 有$P(a)=\frac{1}{2}, P(b)=\frac{3}{4}; K=\{k_1, k_2, k_3\}$,有$P(k_1)=\frac{1}{2}, P(k_2)=\frac{1}{4}, P(k_3)=\frac{1}{4}; C=\{1,2,3,4\}$. 并假设加密函数定义如下:
+$$E_{k_1}(a)=1, E_{k_1}(b)=2; E_{k_2}(a)=2, E_{k_2}(b)=3; E_{k_3}(a)=3, E_{k_3}(b)=4$$
+这个密码体制可通过如下矩阵表示:
+\begin{tabular}{|c|c|c|}
+  $E_{k_j}$ &a &b\\
+  $k_1$ &1 &2\\
+  $k_2$ &2 &3\\
+  $k_3$ &3 &4\\
+\end{tabular}
+计算该密码体制的各组成部分的熵
+
+解: 明文概率分布相关的熵为
+$$
+\begin{aligned}
+  H(M)&=-\sum\limits_{m\in M}P(m)lbP(m)\\
+      &=-P(a)lbP(a)-P(b)lbP(b)\\
+      &=-\frac{1}{4}lb\frac{1}{4}-\frac{3}{4}lb\frac{3}{4}\\
+      &=-\frac{1}{4}\cdot (-2)-\frac{3}{4}(lb3-2)\\
+      &=2-\frac{3}{4}lb3\\
+      &\approx 0.81\\
+\end{aligned}
+$$
+密钥概率分布相关的熵为:
+$$
+\begin{aligned}
+  H(K)&=-\sum\limits_{k\in K}P(k)lbP(k)\\
+      &=-P(k_1)lbP(k_1)-P(k_2)lbP(k_2)-P(K_3)lbP(k_3)\\
+      &=-\frac{1}{2}lb\frac{1}{2}-\frac{1}{4}lb\frac{1}{4}-\frac{1}{4}lb\frac{1}{4}\\
+      &=\frac{1}{2}+2\times \frac{1}{4}+2\times \frac{1}{4}\\
+      &=1.5\\
+\end{aligned}
+$$
+
+密文概率分布相关的熵为:
+
+因为 $H(C)=-\sum\limits_{c\in C}P(c)lbP(c)$
+
+所以 $\mbox{欲求}H(C), \mbox{必须先求出}P(1), P(2), P(3), P(4)$
+
+因为 A,B双方在进行加密 通信之前, A用预先确定的密钥加密明文, 同时在信道上发送产生的密文给B, 即A知道明文之前就选择了密钥
+
+所以 $\mbox{以下假设是合理的: 密钥k和明文m是相互独立的}$.
+
+因为 $P(C)=\sum\limits_{k\in K}\sum\limits_{m\in M}P(m, k, c)$
+
+所以
+$$
+\begin{aligned}
+  &P(1)=P(a,k_1,1)=P(a)\cdot P(k_1)=\frac{1}{4}\times \frac{1}{2}=\frac{1}{8}\\
+  &\begin{aligned}
+  P(2)=P(a,k_2,2)+P(b,k_1,2)&=P(a)\cdot P(k_2)+P(b)\cdot P(k_1)\\
+                            &=\frac{1}{4}\times \frac{1}{4}+\frac{3}{4}\times \frac{1}{2}\\
+                            &=\frac{7}{16}\\
+  \end{aligned}\\
+  &\begin{aligned}
+  P(3)=P(a,k_3,3)+P(b,k_2,3)&=P(a)\cdot P(k_3)+P(b)\cdot P(k_2)\\
+                            &=\frac{1}{4}\times \frac{1}{4}+\frac{3}{4}\times \frac{1}{4}\\
+                            &=\frac{1}{4}\\
+  \end{aligned}\\
+  &P(4)=P(b,k_3,4)=P(b)\cdot P(k_3)=\frac{3}{4}\times \frac{1}{2}=\frac{3}{16}\\
+\end{aligned}
+$$
+
+最后得到
+$$
+\begin{aligned}
+  H(C)&=-\sum\limits_{c\in C}P(c)lbP(c)\\
+      &=-P(1)lbP(1)-P(2)lbP(2)-P(3)lbP(3)-P(4)lbP(4)\\
+      &=-\frac{1}{8}lb\frac{1}{8}-\frac{7}{16}lb\frac{7}{16}-\frac{1}{4}lb\frac{1}{4}-\frac{3}{16}lb\frac{3}{16}\\
+      &\approx 1.85
+\end{aligned}
+$$
+
+\subsection{条件熵}
+\begin{itemize}
+  \item 密码学研究中感兴趣额时在获得某些密文的条件下, 对发送某些消息或使用某一密钥的不确定性测定. 为此定义\hl{暧昧度}(即\hl{条件熵})如下:
+  \begin{definition}
+    设X和Y是两个随机变量, 则对Y的任何一个固定值y, 都可达到一个(条件)概率分布$P(x|y)$. 显然
+    $$H(X|y)=-\sum\limits_x P(x|y)lbP(x|y)$$
+  \end{definition}
+  \item 若定义条件熵$H(X|Y)$是所有可能值y得熵$H(X|y)$的加权平均(关于概率$P(y)$), 即
+  $$
+  \begin{aligned}
+    H(X|Y)=-\sum\limits_y P(y)H(X|y)=-\sum\limits_y \sum\limits_x P(y)P(x|y)lbP(x|y)
+  \end{aligned}
+  $$
+  \item 条件熵测度通过Y来泄露有关X的信息的平均数
+  \begin{theorem}
+    $$
+    \begin{aligned}
+      &H(X, Y)=H(Y)+H(X|Y)\\
+      &H(X, Y)=H(X)+H(Y|X)\\
+    \end{aligned}
+    $$
+  \end{theorem}
+
+  \begin{proof}
+    若X与Y是相互独立的, 则
+    $$
+    \begin{aligned}
+      &H(X,Y)=H(X)+H(Y)\\
+      &H(X|Y)=H(X)\\
+      &H(Y|X)=H(Y)\\
+    \end{aligned}
+    $$
+  \end{proof}
+  \begin{proof}
+    若X,Y和Z是相互独立的, 则
+    $$
+    \begin{aligned}
+      H(X,Y,Z)&=H(X,Y)+H(Z|X,Y)\\
+              &=H(X)+H(Y)+H(Z|X,Y)\\
+              &=H(X)+H(Y)+H(Z|X,Y)\\
+    \end{aligned}
+    $$
+  \end{proof}
+\end{itemize}
+
+\subsection{多余度和唯一解码量}
+\begin{itemize}
+  \item 把熵的结果应用到密码体制, 可以证明在密码体制的组成部分之间存在一个基本关系, 称为\hl{密钥暧昧度}.
+  \begin{theorem}
+    设$(M,C,K,E,D)$是一个密码体制, 那么
+    $$H(K|C)=H(K)+H(M)-H(C)$$
+  \end{theorem}
+
+  例题续: 前面已计算$H(M)\approx 0.81, H(K)\approx 1.5, H(C)\approx 1.85$, 于是有
+  $$
+  \begin{aligned}
+    H(K|C)&=H(M)+H(K)-H(C)
+          &\approx 0.81+1.5-1.85=0.46
+  \end{aligned}
+  $$
+  \item 假设$(M,C,K,E,D)$是一个正在使用的密码体制, 明文串$m_1m_2\cdots m_n$, 用一个密钥加密, 产生一个密文串$c_1c_2\cdots c_n$. 同时假设攻击者有无限的计算资源, 并知道明文为一个"自然"语言, 如英语.
+  \item 对于任意密文, 用不同的密钥脱密可能得到一种以上有意义的译文, 有意义译文的数量越多, 判断哪一个是原文的难度就越大.
+\end{itemize}
+
+\subsection{唯一解码量}
+\begin{enumerate}
+  \item K中的密钥都是\hl{等概率}的, 设$K=\{k_1, \cdots, k_N\}$, N是密钥数量, 所以
+  $$p=\frac{1}{N}, H(K)=-\sum\limits_{k\in K}P(k)lbP(k)=-N\times \frac{1}{N}lb\frac{1}{N}=lbN$$
+  \item 长度为n的字符串共有$t_n=2^{r\cdot n}$, 其中有意义的明文数量$S_n=2^{r_n\cdot n}$. 所以
+  \begin{equation}
+    \begin{aligned}
+      &H(M)=r_n\cdot n\\
+      &H(C)=r\cdot n
+    \end{aligned}
+  \end{equation}
+  \item 若$H(K|C)=H(K)+H(M)-H(C)=0$, 则表明对给定的密文, 密钥不存在不确定性.
+
+  即字符数n使
+  \begin{equation}
+    H(K)+H(M)-H(C)=0
+  \end{equation}
+
+  将式(1)代入(2)得到
+  \begin{equation}
+    H(K)=(r-r_n)n
+  \end{equation}
+  (3)式中的解便是\hl{唯一解码量}, 用$u_d$表示
+  令$r^*=r-r_n$为语言的多余度, 则
+  $$H(K)=r^*\cdot u_d, u_d=\frac{H(K)}{r^*}$$
+
+  \item $u_d$给出了破译一种密码所需要的最少字符串, 也就是确定\underline{密钥的最少密文字符数目}
+\end{enumerate}
+
+例如: 对于单表置换密码, 密钥的数量为$26!$
+$$H(K)=lb26!\approx 88.38(bit)$$
+设\underline{长度为n的明文}, 密文串都取自英文字母表$A={a,b,\cdots, z}$
+\begin{enumerate}
+  \item 则$t_n=w^{r\cdot n}=2^{4.7004n}$
+  注: $t_n=|A|^n$, 而$|A|=26$, 令$r=lb26=4.7004, |A|=2^r$
+  \item 对于长度为n的有意义明文的数目, 有不同的估计值
+  \begin{itemize}
+    \item 当明文的长度充分大时, 设字母$a,b,\cdots, z$出现的频数分别用$n_a, n_b, \cdots, n_z$表示. 则明文的概率$p$为
+    $$p\approx p_a^{n_a}p_b^{n_b}\cdots p_z^{n_z}$$
+    其中$p_a,p_b,\cdots, p_z$分别是字母$a,b\cdots, z$出现的概率
+    \item 令长度为n的有意义的明文数目为$S_n$, 假设它们是等概率的, 即
+    $$p=\frac{1}{s}\mbox{或} S_n=\frac{1}{p}$$
+
+    同时假定n充分大时有
+    $$
+    \left\{
+      \begin{aligned}
+        &n_a=n\cdot p_a\\
+        &n_b=n\cdot p_b\\
+        &\cdots \cdots\\
+        &n_z=n\cdot p_z\\
+      \end{aligned}
+    \right.
+    $$
+
+    则
+    $$
+    \begin{aligned}
+      lbS_n&=-lbp\\
+           &=-n(p_albp_a+p_blbp_b+\cdots +p_zlbp_z)\\
+           &=-n(\sum\limits_{\alpha=a}^z p_{\alpha}lbp_{\alpha})
+    \end{aligned}
+    $$
+    令
+    $r_n=-\sum\limits|{\alpha=a}^z p_{\alpha}lbp_{\alpha}$
+
+    根据英文字母的频率计算得到$r_n=4.19bit$
+    $$
+    \begin{aligned}
+      lbS_n&=r_n\cdot n=4.19\times 26=108.16\\
+        S_n&=2^{r_n\cdot n}=2^{108.16}\\
+        r^*&=r-r_n=4.7004-4.19=0.5104\\
+    \end{aligned}
+    $$
+
+    所以
+    $$u_d=\frac{H(K)}{r^*}=\frac{88.38}{0.5104}=173$$
+
+    即对单表置换密码, \hl{唯一解码量为173个字符}
+  \end{itemize}
+  \item \hl{唯一解码量}依赖于对\hl{语言多余度}的估计, 归根到底是基于对有意义的报文概率的计算.
+\end{enumerate}
+\end{document}
