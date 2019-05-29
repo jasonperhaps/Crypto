@@ -1,0 +1,611 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % use normalem to protect \emph
+\newcommand\hl{\bgroup\markoverwith
+  {\textcolor{yellow}{\rule[-.5ex]{2pt}{2.5ex}}}\ULon}
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+\newtheorem{theorem}{\hspace{2em}定理}[section]
+\newtheorem{definition}{\hspace{2em}定义}[section]
+\newtheorem{corollary}{\hspace{2em}推论}[section]
+\newtheorem{proof}{\hspace{2em}证明}[section]
+
+\begin{document}
+\section{填空题总结}
+\begin{enumerate}
+  \item 密码攻击的对象可以是加密算法, 也可以是密码协议. 对加密方案的攻击, 根据分析者使用的数据不同, 可以分为\underline{唯密文攻击}、\underline{已知明文攻击}、\underline{选择明文攻击}、\underline{选择密文攻击}. 其中破译难度最大的是\underline{选择密文攻击}
+  \item 计算复杂性理论中, P-问题指一个问题已经找到了一个\underline{多项式算法}, NP-问题指用\underline{非确定性算法}在\underline{多项式时间内}可以解决的算法, NPC-问题指用\underline{非确定性算法}不能在\underline{多项式时间}内解决的问题
+  \item IDEA的明文和密文块都是\underline{64比特}, 密钥长度为\underline{128比特}, 加解密算法相同, 但\underline{密钥各异},
+  \item 密码体制的无条件保密性不能根据
+  \item 从密码系统角度看一个伪随机序列因该满足的条件是
+  \begin{enumerate}[label={[}\arabic*{]}]
+    \item $\{a_i\}$的周期相当大
+    \item $\{a_i\}$确定是计算上是容易的
+    \item 由密文及相应明文的部分信息, 不能确定整个$\{a_i\}$
+  \end{enumerate}
+
+\end{enumerate}
+\section{简单题总结}
+\begin{enumerate}
+    \item 试简述计算复杂性理论在密码学中的作用
+
+    \hl{在现代密码中, 一个密码系统的破译常常可以归结为求解某个数学问题, 数学问题的算法求解复杂性可通过计算复杂性理论来描述}
+      \begin{enumerate}[label={[}\arabic*{]}]
+        \item 计算复杂性理论位破译密码的计算复杂度提供了实际的\hl{度量方法}
+        \item 计算复杂性理论中的一些经典的数学问题给人们提供了设计实用安全的高强度密码系统的\hl{基础}
+      \end{enumerate}
+
+      \item 描述FEAL加密算法
+      \begin{enumerate}[label={[}\arabic*{]}]
+        \item 1987年两位日本学者在DES的基础上提出了一种\hl{快速数据加密算法}FEAL
+        \item FEAl的算法类似于DES, 但其每轮都比DES强度大, 因为其轮次少, 运算速度比较快.
+        \item 与DES的区别
+        \begin{itemize}
+            \item 增大了有效密钥的长度
+            \item 减少了迭代次数
+            \item 增强了加密函数f的复杂性
+            \item 增强了密钥的控制作用
+        \end{itemize}
+        \item FEAL的整体结构
+        \begin{itemize}
+            \item 分组长度为64位
+            \item 算法\hl{面向二进制设计}
+            \item 加密运算是\hl{对合运算}
+            \item $M\rightarrow \mbox{初始运算}\rightarrow \mbox{四次迭代}\rightarrow \mbox{末尾运算}\rightarrow C$
+        \end{itemize}
+      \end{enumerate}
+\end{enumerate}
+
+\section{计算题}
+\begin{enumerate}
+    \item 假设Hill密码使用密钥$K=\left[ \begin{matrix}
+        11 &8\\
+        3 &7\\
+    \end{matrix}\right]$, 试着对明文regional加密
+
+    解: regional 对应明文数字序列$M=(17, 4, 6, 8, 14, 13, 0, 11)$
+    取$l=2, n=26$
+    密钥$K=\left[ \begin{matrix}
+        11 &8\\
+        3 &7\\
+    \end{matrix}\right]$
+
+    于是有
+    $$
+    \begin{aligned}
+        &c_1=11\times 17+8\times 4=\\
+        &c_2=3\times 17+7\times 4=\\
+        &c_3=11\times 6+8\times 8=\\
+        &c_4=3\times 6+7\times 8=\\
+        &c_5=11\times 14+8\times 13=\\
+        &c_6=3\times 14+7\times 13=\\
+        &c_7=11\times 0+8\times 11=\\
+        &c_8=3\times 0+7\times 11=\\
+    \end{aligned}
+    $$
+
+    \item 求解线性同余方程$7x\equiv 23(\bmod 41)$
+
+    解: 因为7和41都是正整数, 且41为素数, $(7, 41)=1$,
+
+    所以 $7x\equiv 23(\bmod 41)$有唯一解, $x\equiv a^{p-2}b(\bmod p)$, 即$x\equiv 7^{41-2}\times23(\bmod 41)\equiv 7^{39}\times 23(\bmod 41)$
+
+    因为$7^{\Phi(41)}=7^{40}=1(\bmod 41)$
+
+    而 $7^{39}=7^{40}\cdot 7^{-1}=1\cdot 7^{-1}(\bmod  41)\equiv 7^{-1}(\bmod 41)\equiv 6(\bmod 41)$
+
+    所以$x=6\times 23(\bmod 41)\equiv 15(\bmod 41)$
+
+    \item 求$1004^{13}(\bmod 2537)$
+
+    解: 由题可知 $x=1004, c=23, n=2537$
+    $$
+    \begin{aligned}
+      &c=13=(1101)_2\\
+      &i=3, c_3=1, z=z^2\times x=1^2\times 1004=1004(\bmod 2537)\\
+      &i=2, c_2=1, z=z^2\times x=1004^2\times 1004=709(\bmod 2537)\\
+      &i=1, c_1=0, z=z^2=709^2(\bmod 2537)=355(\bmod 2537)\\
+      &i=0, c_0=1, z=z^2\times x=355^2\times 1004=1299(\bmod 2537)\\
+    \end{aligned}
+    $$
+    \item 假设$a=(2,5,9,21,45,103,215,450)$是一个超递增序列, 取$m'=2003, w=1531$. 试用背包密码对明文$m=11011010$加密
+
+    解:
+
+    \begin{enumerate}
+      \item 计算公开钥
+      由$b_i\equiv wa_i(\bmod m')$
+      $$
+      \begin{aligned}
+        &b_1=1531\times 2(\bmod 2003)=1059(\bmod 2003)\\
+        &b_2=1531\times 5(\bmod 2003)=1646(\bmod 2003)\\
+        &b_3=1531\times 9(\bmod 2003)=1761(\bmod 2003)\\
+        &b_4=1531\times 21(\bmod 2003)=103(\bmod 2003)\\
+        &b_5=1531\times 45(\bmod 2003)=793(\bmod 2003)\\
+        &b_6=1531\times 103(\bmod 2003)=1459(\bmod 2003)\\
+        &b_7=1531\times 215(\bmod 2003)=673(\bmod 2003)\\
+        &b_8=1531\times 450(\bmod 2003)=1921(\bmod 2003)\\
+      \end{aligned}
+      $$
+      \item 加密
+
+      利用公式$b=\sum\limits_{i=1}^n b_im_i$求得b:
+      $$b=1059+1646+103+793+673=4274$$
+      \item 解密
+      \begin{enumerate}[label={[}\arabic*{]}]
+        \item 利用欧几里得算法计算$w^{-1}$
+        由$ww^{-1}\equiv 1(\bmod m')$及$m'=2003, w=1531$得
+        $$
+        \begin{aligned}
+          &w^{-1}1531\equiv 1(\bmod 2003)\\
+          &w^{-1}\equiv 1(\bmod 2003)=-836(\bmod 2003)\\
+        \end{aligned}
+        $$
+      由$a_i\equiv w^{-1}b_i(\bmod m')$
+      \end{enumerate}
+    \end{enumerate}
+
+    \item 令M=$\{a, b\}$, 有$P(a)=\frac{1}{4}, P(b)=\frac{3}{4}, K={k_1, k_2, k_3}$, 有$P(k_1)=\frac{1}{2}, P(k_2)=\frac{1}{4}, P(k_3)=\frac{1}{4}, C=\{1,2,3,4\}$. 并假设加密函数定义如下:
+    $E_{k_1}(a)=1, E_{k_1}(b)=2; E_{k_2}(b)=1, E_{k_2}(b)=3; E_{k_3}(a)=2, E_{k_3}(b)=4$, 计算该密码体制得熵
+
+    解: 这个密码体制可以通过下表表示
+    \begin{table}[h]
+      \centering
+      \begin{tabular}{|c|c|c|}
+        \hline
+        $E_{k_1}$ &a &b\\
+        \hline
+        $k_1$ &1 &2\\
+        \hline
+        $k_2$ &1 &3\\
+        \hline
+        $k_3$ &2 &4\\
+        \hline
+      \end{tabular}
+    \end{table}
+
+      明文概率分布相关的熵为
+      $$
+      \begin{aligned}
+        H(M)&=-\sum\limits_{m\in M}P(m)lbP(m)\\
+            &=-P(a)lbP(a)-P(b)lbP(b)\\
+            &=-\frac{1}{4}lb\frac{1}{4}-\frac{3}{4}lb\frac{3}{4}\\
+            &=-\frac{1}{4}\times (-2)-\frac{3}{4}(lb3 - 2)
+            &=2-\frac{3}{4}lb3\approx 0.81
+      \end{aligned}
+      $$
+
+      密钥概率分布相关的熵为
+      $$
+      \begin{aligned}
+        H(K)&=-\sum\limits_{k\in K}P(k)lbP(k)\\
+            &=-P(k_1)lbP(k_1)-P(k_2)lbP(k_2)-P(k_3)lbP(k_3)
+            &=1.5
+      \end{aligned}
+      $$
+
+      密文概率分布的熵为
+      $$
+      \begin{aligned}
+        H(C)&=-\sum\limits_{c\in C}P(c)lbP(c)\\
+      \end{aligned}
+      $$
+
+      欲求出密文概率分布的熵, 首先要求出$P(1), P(2), P(3), P(4)$
+
+      因为密钥k和明文m是相互独立的
+
+      所以
+      $$P(C)=\sum\limits_{k\in K}\sum\limits_{m\in M}P(m,k,c)$$
+      根据上表可得
+      $$
+      \begin{aligned}
+        &P(1)=P(b,k_1,1)+P(a,k_2,1)=P(b)\cdot P(k_1)+P(a)\cdot P(k_2)=\frac{1}{4}\times \frac{1}{4}+\frac{3}{4}\times \frac{1}{2}=\frac{7}{16}\\
+        &P(2)=P(b,k_1,2)+P(a,k_3,2)=P(b)\cdot P(k_1)+P(a)\cdot P(k_3)=\frac{1}{4}\times \frac{1}{4}+\frac{3}{4}\times \frac{1}{2}=\frac{7}{16}\\
+        &P(3)=P(b,k_2,3)=P(b)\cdot P(k_2)=\frac{1}{4}\times \frac{1}{4}=\frac{7}{16}\\
+        &P(4)=P(b,k_3,4)=P(b)\cdot P(k_3)=\frac{1}{4}\times \frac{1}{4}=\frac{7}{16}\\
+      \end{aligned}
+      $$
+      \item 画出以$f(x)=x^5+x^3+x+1$表示5级LFSR的循环结构, 若初始状态为01101, 是求出其输出序列及其周期
+
+      解: 由题可知$C_1=1, C_2=0, C_3=1, C_4=0, C_5=1$
+
+      则有$
+      \begin{aligned}
+        f(a_1, a_2, a_3, a_4, a_5)&=C_5a_1\oplus C_4a_2\oplus C_3a_3\oplus C_2a_4\oplus C_1a_5\\
+                                  &=a_1\oplus a_3\oplus a_5\\
+      \end{aligned}
+      $
+
+      $$
+      \begin{aligned}
+        &S_1=(a_1, a_2, a_3, a_4, a_5)=(01101)_2, \mbox{输出为}a_1=0\\
+        &a_6=a_1\oplus a_3\oplus a_5=0\oplus 1\oplus 1=0, S_2=(a_2, a_3, a_4, a_5, a_6)=(11010), \mbox{输出为}a_2=1\\
+        &a_7=a_2\oplus a_4\oplus a_6=1\oplus 0\oplus 0=1, S_3=(a_2, a_3, a_4, a_5, a_6)=(10101), \mbox{输出为}a_3=1\\
+        &a_8=a_3\oplus a_5\oplus a_7=1\oplus 1\oplus 1=1, S_4=(a_3, a_4, a_5, a_6, a_7)=(01011), \mbox{输出为}a_4=0\\
+        &a_9=a_4\oplus a_6\oplus a_8=0\oplus 0\oplus 1=1, S_5=(a_4, a_5, a_6, a_7, a_8)=(10111), \mbox{输出为}a_5=1\\
+        &a_{10}=a_5\oplus a_7\oplus a_9=1\oplus 1\oplus 1=1, S_6=(a_5, a_6, a_7, a_8, a_9)=(01111), \mbox{输出为}a_6=0\\
+        &a_{11}=a_6\oplus a_8\oplus a_{10}=0\oplus 1\oplus 1=0, S_7=(a_6, a_7, a_8, a_9, a_10)=(11110), \mbox{输出为}a_7=1\\
+        &a_{12}=a_7\oplus a_9\oplus a_{11}=1\oplus 1\oplus 0=0, S_8=(a_7, a_8, a_9, a_10, a_11)=(11100), \mbox{输出为}a_8=1\\
+        &a_{13}=a_8\oplus a_{10}\oplus a_{12}=1\oplus 1\oplus 0=0, S_9=(a_8, a_9, a_10, a_11, a_12)=(11000), \mbox{输出为}a_9=1\\
+        &a_{14}=a_9\oplus a_{11}\oplus a_{13}=1\oplus 0\oplus 0=1, S_{10}=(a_9, a_{10}, a_{11}, a_{12}, a_{13})=(10001), \mbox{输出为}a_{10}=1\\
+        &a_{15}=a_{10}\oplus a_{12}\oplus a_{14}=1\oplus 0\oplus 1=0, S_{11}=(a_{10}, a_{11}, a_{12}, a_{13}, a_{14})=(00010), \mbox{输出为}a_{11}=0\\
+        &a_{16}=a_{11}\oplus a_{13}\oplus a_{15}=0\oplus 0\oplus 0=0, S_{12}=(a_{11}, a_{12}, a_{13}, a_{14}, a_{15})=(00100), \mbox{输出为}a_{12}=0\\
+        &a_{17}=a_{12}\oplus a_{14}\oplus a_{16}=0\oplus 1\oplus 0=1, S_{13}=(a_{12}, a_{13}, a_{14}, a_{15}, a_{16})=(01001), \mbox{输出为}a_{13}=0\\
+      \end{aligned}
+      $$
+
+      输出序列为$01101011110001001101011110\cdots$以15为周期
+
+      \item 假设$p=83, q=41, h=2$
+      \begin{enumerate}
+        \item 求参数g
+        $$
+        \begin{aligned}
+          &p=83=2q+1\\
+          &g\equiv 2^2(\bmod 83)=4(\bmod 83)\\
+        \end{aligned}
+        $$
+        \item 取私钥$x=57$, 求公钥y
+        $$
+          y\equiv g^x(\bmod p)\equiv 4^{57}(\bmod 83)=77(\bmod 83)
+        $$
+
+        \item 明文$m=56$, 取随机数$k=23$, 求m的签名
+        因为$k^{-1}k\equiv 1(\bmod q)$
+
+        所以
+        $$
+        \begin{aligned}
+          &k^{-1}=-16\\
+          &r=[g^k(\bmod p)](\bmod q)=[4^{23}(\bmod 83)](\bmod 41)=10\\
+          &s=[k^{-1}(H(m)+xr)](\bmod q)=[-16\times(56+57\times 10)](\bmod 41)=29\\
+        \end{aligned}
+        $$
+        于是消息56的签名为(10, 29)
+      \end{enumerate}
+
+      \item 已知放射变换为$c=11m+7(\bmod 26)$, 试对明文matrix加密.
+
+      解: 明文matrix对应的序列为(12,0,19,17,8,23)
+      $$
+      \begin{aligned}
+        &c_1=11m_1+7(\bmod 26)=11\times 12+7(\bmod 26)=9(\bmod 26)\\
+        &c_2=11m_2+7(\bmod 26)=11\times 0+7(\bmod 26)=7(\bmod 26)\\
+        &c_3=11m_3+7(\bmod 26)=11\times 19+7(\bmod 26)=8(\bmod 26)\\
+        &c_4=11m_4+7(\bmod 26)=11\times 17+7(\bmod 26)=12(\bmod 26)\\
+        &c_5=11m_5+7(\bmod 26)=11\times 8+7(\bmod 26)=17(\bmod 26)\\
+        &c_6=11m_6+7(\bmod 26)=11\times 23+7(\bmod 26)=0(\bmod 26)\\
+      \end{aligned}
+      $$
+      故密文序列为(9,7,8,12,17,0), 对应密文为jhimra
+
+      \item 假设Hill密码使用密钥$K=\left[
+        \begin{matrix}
+          8 &6 &9 &5\\
+          6 &9 &5 &10\\
+          5 &8 &4 &9\\
+          10 &6 &11 &4\\
+        \end{matrix}
+        \right]$, 试对明文best加密
+
+        解: 明文best对应序列为(1, 4, 18, 19), $l=4, n=26$
+        $$
+        \begin{aligned}
+          &c_1=8\times 1+6\times 4+9\times 18+5\times 19(\bmod 26)=\\
+          &c_2=6\times 1+9\times 4+5\times 18+10\times 19(\bmod 26)=\\
+          &c_3=5\times 1+8\times 4+4\times 18+9\times 19(\bmod 26)=\\
+          &c_4=10\times 1+6\times 4+11\times 18+4\times 19(\bmod 26)=\\
+        \end{aligned}
+        $$
+
+        \item 使用欧几里得算法求$47(\bmod 211)$的逆元.
+
+        解: 设47的逆元为$w^{-1}$, 则$w^{-1}47=1(\bmod 211)$
+        首先\hl{辗转相除法}
+        $$
+        \begin{aligned}
+          1&=47-46\\
+           &=47-2\times 23\\
+           &=47-2\times (211-4\times 47)\\
+           &=9\times 49 - 2\times 211
+        \end{aligned}
+        $$
+
+        所以逆元为$9(\bmod 211)$
+
+        \item 考虑一个密码体制$M=\{a,b,c\}, K=\{k_1,k_2\}, C=\{1,2,3,4\}$,
+
+        假设加密矩阵为
+        \begin{tabular}{|c|c|c|c|}
+          \hline
+           &a &b &c\\
+          \hline
+          $k_1$ &2 &3 &4\\
+          \hline
+          $k_2$ &3 &4 &1\\
+          \hline
+        \end{tabular}
+
+        已知密钥的概率分布$P(k_1)\frac{1}{4}, P(k_2)=\frac{3}{4}$, 明文概率分布为$P(a)=\frac{1}{4}, P(b)=\frac{1}{4}, P(c)=\frac{1}{2}$.计算$H(M), H(K), H(C)$
+
+        解: 由公式$H(M)=-\sum\limits_{m\in M}P(m)lbP(m)$
+        得$$
+        \begin{aligned}
+          H(M)&=-P(a)lbP(a)-P(b)lbP(b)-P(c)lbP(c)\\
+              &=-\frac{1}{4}lb\frac{1}{4}-\frac{3}{4}lb\frac{3}{4}-\frac{1}{2}lb\frac{1}{2}\\
+              &=-\frac{1}{4}\times (-2)-\frac{1}{4}\times (-2)-\frac{1}{2}\times (-1)\\
+              &\approx 1.5\\
+        \end{aligned}
+        $$
+
+        由公式$H(K)=-\sum\limits_{k\in K}P(k)lbP(k)$
+        得$$
+        \begin{aligned}
+          H(K)&=-P(k_1)lbP(k_1)-P(k_2)lbP(k_2)\\
+              &=-\frac{1}{4}lb\frac{1}{4}-\frac{3}{4}lb\frac{3}{4}-\frac{1}{2}lb\frac{1}{2}\\
+              &=-\frac{1}{4}\times (-2)-\frac{3}{4}\times (lb3-2)\\
+              &\approx 0.81\\
+        \end{aligned}
+        $$
+
+        由公式$H(C)=-\sum\limits_{c\in C}P(c)lbP(c)$
+
+        可知要求$H(C)$, 首先要求出$P(C)$
+
+        由公式$P(C)=\sum\limits_{m\in M}\sum\limits_{k\in K} P(m, k, c)$
+
+        由上表可知
+        $$
+        \begin{aligned}
+          &P(1)=P(c, k_2, 1)=P(c)P(k_2)=\frac{1}{2}\times \frac{3}{4}=\frac{3}{8}\\
+          &P(2)=P(a, k_1, 2)=P(a)P(k_1)=\frac{1}{4}\times \frac{1}{4}=\frac{1}{16}\\
+          &P(3)=P(b, k_1, 3)+P(a, k_2, 3)=P(b)P(k_1)+P(a)P(k_2)=\frac{1}{4}\times \frac{1}{4}+\frac{1}{4}\times \frac{3}{4}=\frac{1}{4}\\
+          &P(4)=P(c, k_1, 4)=P(c)P(k_1)=\frac{1}{2}\times \frac{1}{4}=\frac{1}{8}\\
+        \end{aligned}
+        $$
+
+        得$$
+        \begin{aligned}
+          H(M)&=-P(1)lbP(1)-P(2)lbP(2)-P(3)lbP(3)-P(4)lbP(4)\\
+              &=-\frac{1}{4}lb\frac{1}{4}-\frac{3}{4}lb\frac{3}{4}-\frac{1}{2}lb\frac{1}{2}\\
+              &=-\frac{1}{4}\times (-2)-\frac{3}{4}\times (lb3-2)\\
+              &\approx 0.81\\
+        \end{aligned}
+        $$
+
+        \item 求解线性同余方程$5x\equiv 19(\bmod 31)$
+
+        由题可知(5, 31)=1, 所以该方程有唯一解
+
+        由公式$x\equiv a^{p-2}b(\bmod p)$
+        得$x\equiv 5^{31-2}\times 19(\bmod 31)\equiv 5^{29}\times 19(\bmod 31)$
+
+        因为$5^{\Phi(31)}=5^{30}\equiv 1(\bmod 31)$
+
+        所以$5^{29}\equiv 5^{-1}\times 5^{30}(\bmod 31)\equiv 5^{-1}(\bmod 31)$
+
+        由欧几里得算法可得$5^{-1}(\bmod 31)\equiv (-6)(\bmod 31)$
+
+        所以$x\equiv 19\times (-6)(\bmod 31)\equiv 10(\bmod  31)$
+
+        \item 求$1004^{13}(\bmod 2537)$
+
+        解: 由题得 $x=1004, c=13, n=2537$
+
+        $$
+        \begin{aligned}
+          &c=13=(1101)_2, z=1\\
+          &i=3, c_3=1, z=z^2\times x(\bmod n)=1004(\bmod 2537)\\
+          &i=2, c_2=1, z=z^2\times x(\bmod n)=1004^2\times 1004(\bmod 2537)=709(\bmod 2537)\\
+          &i=1, c_1=0, z=z^2(\bmod n)=709^2(\bmod 2537)=355(\bmod 2537)\\
+          &i=0, c_0=1, z=z^2\times x(\bmod n)=355^2\times 1004(\bmod 2537)=1299(\bmod 2537)\\
+        \end{aligned}
+        $$
+
+        解: 假设$a=(2,5,9,21,45,103,215,450)$是一个超递增序列, 取$m'=2007, w=1531$, 用背包加密算法对明文$m=10011011$加密
+
+        解: 首先利用公式$b_i=wa_i(\bmod m')$
+        $$
+        \begin{aligned}
+          &b_1=wa_1(\bmod m')=1531\times 2(\bmod 2007)=1055(\bmod 2007)\\
+          &b_2=wa_2(\bmod m')=1531\times 5(\bmod 2007)=1634(\bmod 2007)\\
+          &b_3=wa_3(\bmod m')=1531\times 9(\bmod 2007)=1737(\bmod 2007)\\
+          &b_4=wa_4(\bmod m')=1531\times 21(\bmod 2007)=39(\bmod 2007)\\
+          &b_5=wa_5(\bmod m')=1531\times 45(\bmod 2007)=657(\bmod 2007)\\
+          &b_6=wa_6(\bmod m')=1531\times 103(\bmod 2007)=1147(\bmod 2007)\\
+          &b_7=wa_7(\bmod m')=1531\times 215(\bmod 2007)=17(\bmod 2007)\\
+          &b_8=wa_8(\bmod m')=1531\times 450(\bmod 2007)=549(\bmod 2007)\\
+        \end{aligned}
+        $$
+
+        然后利用公式$b=\sum\limits_{i=1}^n b_im_i$
+        求得$b=1055+39+657+17+549=2317$
+        即密文为2317
+\end{enumerate}
+
+\section{J-K触发器专题}
+J-K触发器可以用以下递推公式计算
+$$c_n=((a_n+b_n+1)\times c_{n-1}+a_n)\bmod 2$$
+
+\begin{table}[h]
+  \centering
+  \caption{J-K触发器真值表}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    J &K &$C_K$\\
+    \hline
+    0 &0 &$C_{K-1}$\\
+    \hline
+    0 &1 &0\\
+    \hline
+    1 &0 &1\\
+    \hline
+    1 &1 &$\overline{C_{K-1}}$\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{例题}
+已知LFSR1生成周期为3的序列
+$$\{a_k\}=0,1,1,\cdots$$
+LFSR2生成周期为4的序列
+$$\{b_k\}=1,0,0,1\cdots$$
+
+结合上表可得
+$$
+\begin{aligned}
+  &J=a_1=0, K=b_1=1, c_1=0\\
+  &J=a_2=1, K=b_2=0, c_2=1\\
+  &J=a_3=1, K=b_3=0, c_3=1\\
+  &J=a_4=0, K=b_4=1, c_4=0\\
+  &J=a_5=1, K=b_5=1, c_5=1\\
+  &J=a_6=1, K=b_6=0, c_6=1\\
+  &J=a_7=0, K=b_7=0, c_7=1\\
+  &J=a_8=1, K=b_8=1, c_8=0\\
+  &J=a_9=1, K=b_9=1, c_9=1\\
+  &J=a_{10}=0, K=b_{10}=0, c_{10}=1\\
+  &J=a_{11}=1, K=b_{11}=0, c_{11}=1\\
+  &J=a_{12}=1, K=b_{12}=1, c_{12}=0\\
+\end{aligned}
+$$
+生成序列为$011011101110\cdots$, 周期为12
+
+\section{传统密码专题}
+\begin{enumerate}[label={[}\arabic*{]}]
+  \item 已知仿射变换为$c=5m+7(\bmod 26)$,试对密文VMWZ解密
+
+  解: VMWZ对应的序列为$(21, 12, 22, 25)$
+  由题可知$m=5^{-1}\times (c-7)(\bmod 26)$
+  因为$5^{-1}(\bmod 26)=(-5)(\bmod 26)$
+
+  所以$m=(-5)\times (c-7)(\bmod 26)$
+
+  所以
+  $$
+  \begin{aligned}
+    &m_1=(-5)\times (c_1-7)(\bmod 26)=(-5)\times 14(\bmod 26)=8(\bmod 26)\\
+    &m_2=(-5)\times (c_2-7)(\bmod 26)=(-5)\times 5(\bmod 26)=1(\bmod 26)\\
+    &m_3=(-5)\times (c_3-7)(\bmod 26)=(-5)\times 15(\bmod 26)=3(\bmod 26)\\
+    &m_4=(-5)\times (c_4-7)(\bmod 26)=(-5)\times 18(\bmod 26)=14(\bmod 26)\\
+  \end{aligned}
+  $$
+
+  密文为ibdo
+
+  \item 假设明文friday利用$l=2$的Hill密码加密, 得到密文PQCFKU, 试求密钥K
+
+  解: 明文friday对应的序列为$[5,17,8,3,0,24]$
+
+  密文PQCFKU对应的序列为$[15,16,2,5,10,20]$
+
+  由于$l=2$
+  可得
+  $$
+  \begin{aligned}
+    &\left[ \begin{array}{c}{15}\\ {16} \end{array}\right]=K\left[ \begin{array}{c}{5}\\ {17} \end{array}\right](\bmod 26)\\
+    &\left[ \begin{array}{c}{2}\\ {5} \end{array}\right]=K\left[ \begin{array}{c}{8}\\ {3} \end{array}\right](\bmod 26)\\
+    &\left[ \begin{array}{c}{10}\\ {20} \end{array}\right]=K\left[ \begin{array}{c}{0}\\ {24} \end{array}\right](\bmod 26)\\
+  \end{aligned}
+  $$
+
+  联立前两个方程得
+  $$
+  \left[ \begin{matrix} 15 &2\\ 16 &5\\ \end{matrix}\right]=K\left[ \begin{matrix} 5 &8\\ 17 &3\\ \end{matrix}\right](\bmod 26)
+  $$
+
+  因为
+  $\left| \begin{matrix} 15 &2\\ 16 &5\\ \end{matrix}\right|=43, (43,26)=1, (-3)\times 43(\bmod 26)\equiv 1(\bmod 26)$
+
+  所以$(detA)^{-1}=-3$
+
+  容易算出
+  $$
+  \begin{aligned}
+    \left[ \begin{matrix} 15 &2\\ 16 &5\\ \end{matrix}\right]^{-1}&=(-3)\left[ \begin{matrix} 15 &2\\ 16 &5\\ \end{matrix}\right]\\
+      &=\left[ \begin{matrix} -15 &6\\ 48 &-75\\ \end{matrix}\right](\bmod 26)\\
+      &=\left[ \begin{matrix} 11 &6\\ 22 &3\\ \end{matrix}\right](\bmod 26)\\
+  \end{aligned}
+  $$
+
+  所以
+  $$
+  \begin{aligned}
+    K&=\left[ \begin{matrix} 5 &8\\ 17 &3\\ \end{matrix}\right]\left[ \begin{matrix} 11 &6\\ 22 &3\\ \end{matrix}\right](\bmod 26)\\
+      &=\left[ \begin{matrix} 231 &54\\ 253 &111\\ \end{matrix}\right](\bmod 26)\\
+      &=\left[ \begin{matrix} 23 &2\\ 19 &7\\ \end{matrix}\right](\bmod 26)\\
+  \end{aligned}
+  $$
+\end{enumerate}
+
+\section{分组密码}
+\begin{enumerate}[label={[}\arabic*{]}]
+  \item 设DES数据加密标准中
+  已知明文m, 和密钥k, 试求$L_1$和$R_1$
+
+  \begin{enumerate}
+    \item IP置换, 得到置换后的明文(64位), 一分为二得到$L_0$, $R_0$
+    \item PC-1置换, 得到置换后的密钥(56位),一分为二得到$C_0, D_0$($56\rightarrow28$位)
+    \item 循环左移, 参照循环左移表, 得到$C_0\sim C_{16}, D_0\sim D_{16}$(28位)
+    \item PC-2置换, 将$C_i$和$D_i$结合起来, 再进行PC-2置换, 得到$K_i$(48位)
+    \item E置换, 针对于$R_i$, 将32位置换为48位.
+    \item $E(R_{i-1})\oplus K_i$: 将上面两步产生的$R_{i-1}$和$K_i$相$\oplus$(48位)
+    \item S盒输出, 将上一步产生的序列平均分为8组, 每组6比特, 经过S盒置换后, 每组得到4比特, 总共32比特
+    \item P置换, 得到加密函数$f(R_{i-1}, K_i)$
+    \item $R_i=L_{i-1}\oplus f(R_{i-1}, K_i)$
+  \end{enumerate}
+
+  \item 已知IDEA密码算法中
+  $$Z_1^{(1)}=1000010010011101=33949$$
+  求$[Z_1^{(1)}]^{-1}$与$-Z_1^{(1)}$
+
+  由$Z\odot Z^{-1}\equiv 1(\bmod 2^{16}+1)$
+  即
+\end{enumerate}
+
+\section{公钥密码}
+\begin{enumerate}[label={[}\arabic*{]}]
+  \item 求解下列同余方程组
+  $$
+  \left\{ \begin{aligned}
+    &x\equiv 2(\bmod 3)\\
+    &x\equiv 1(\bmod 5)\\
+    &x\equiv 1(\bmod 7)\\
+  \end{aligned}\right.
+  $$
+
+  由题可知$b_1=2, b_2=1, b_3=1, m_1=3, m_2=5, m_5=7$
+
+  则$$
+  \begin{aligned}
+    &M=m_1m_2m_3=3\times 5\times 7=105\\
+    &M_1=m_2m_3=5\times 7=35\\
+    &M_2=m_1m_3=3\times 7=21\\
+    &M_3=m_1m_2=3\times 5=15\\
+  \end{aligned}
+  $$
+
+  所以
+  $$\left\{
+    \begin{aligned}
+      &35y_1=1(\bmod 3), y_1=2\\
+      &21y_2=1(\bmod 5), y_2=1\\
+      &15y_3=1(\bmod 7), y_3=1\\
+    \end{aligned}
+  \right.
+  $$
+
+  所以
+  $$
+  \begin{aligned}
+    x&\equiv b_1M_1y_1+b_2M_2y_2+b_3M_3y_3(\bmod 105)\\
+      &\equiv 2\times 35\times 2+1\times 21\times 1+1\times 15\times1\\
+      &\equiv 176(\bmod 105)\\
+      &\equiv 71(\bmod 105)
+  \end{aligned}
+  $$
+\end{enumerate}
+\end{document}

@@ -1,0 +1,330 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % use normalem to protect \emph
+\newcommand\hl{\bgroup\markoverwith
+  {\textcolor{yellow}{\rule[-.5ex]{2pt}{2.5ex}}}\ULon}
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+\newtheorem{theorem}{\hspace{2em}定理}[section]
+\newtheorem{definition}{\hspace{2em}定义}[section]
+\newtheorem{corollary}{\hspace{2em}推论}[section]
+\newtheorem{proof}{\hspace{2em}证明}[section]
+
+\begin{document}
+香浓证明了"一次一密"密码体制在理论上是不可破译的, 序列密码就是所寻求的方法之一. 序列密码是军事、外交等领域的\hl{主流密码体制}
+
+\section{序列密码的加、解密过程}
+[1] 将报文、语音、图像、数据等原始明文转换为明文数据序列
+
+[2] 将转换后的数据序列用密钥序列进行逐位加密生成密文数据序列并发送给接收者.
+
+[3] 接收者使用\hl{相同的密钥序列}对密文数据序列进行逐位解密恢复出明文序列.
+
+\section{序列密码的发展过程}
+\begin{itemize}
+  \item 序列密码不存在数据扩展和错误传播, 实时性比较好, 加解密实现容易
+  \item Vernam密码最早的二进制序列密码序列密码系统. 当Vernam密码中的密钥序列为完全随机的二进制序列时, 它就是"一次一密"密码. 但其密钥产生分配和管理都极为困难, 故未得到广泛运用.
+  \item 随着微电子技术和数学理论的发展, \hl{基于伪随机序列的序列密码}称为当前最通用的密码系统. 这种序列密码中, 加、解密的密钥序列都是伪随机序列.
+  \item 伪随机序列是由密钥流产生器产生的. 密钥流产生器实际上就是通过给定算法产生通常是$0\sim 1$数据流的密钥流.
+\end{itemize}
+
+\section{伪随机序列}
+只要求截获到比周期更短的一段密文时不至于泄露更多的信息, 这样的序列称为\hl{伪随机序列}
+
+序列密码的安全保密性主要依赖于\hl{密钥序列}, 因此研究什么样的伪随机序列可以得到作为序列密码的密钥序列称为序列密码研究中的主要问题. 即序列密码的关键是\hl{产生密钥序列的算法}.
+
+\subsection{序列密码的一般原理}
+假设序列密码中
+\begin{itemize}
+  \item M为明文空间是有可能的二进制数字序列组成的集合
+  \item K为密钥空间, $k\in K$为密钥序列产生算法A产生长密钥序列的一个短序列
+
+  序列密码的成败取决于算法A的保密程度以及复杂度, 各国的核心密码都不公布算法A. 序列 密码的加、解密过程
+  \item 对于每一个短密钥$k\in K$, 由算法A确定一个二进制序列$A(k)=k_1k_2\cdots$.
+  \item 加密时, 当明文$m\in M, m=m_1m_2\cdots m_n$时, 对$i=1,2,\cdots ,n$, 计算$c_i=m\oplus k_i$, 则密文为$c=E(m,k)=c_1c_2\cdots c_n$
+  \item 解密时, 对$i=1,2,\cdots ,n$, 计算$m_i=c_i\oplus k_i$, 恢复出明文.
+
+  通常称密钥k为\hl{种子密钥}, 由k通过算法A产生的$A(k)=k_1k_2\cdots$序列称为\hl{密钥序列}
+
+  序列密码的安全性主要依赖于密钥序列$A(k)=k_1k_2\cdots$, 当$k_1k_2\cdots$是离散无记忆的二进制均匀分布信源产生的随机序列时, 则该密码系统是一次一密系统. 但实际上$A(k)$是由k通过确定性算法产生的伪随机序列, 该系统不是完全保密的
+
+  \hl{设计序列密码系统}的关键是设计密钥序列$A(k)$; 破译序列密码也只需要求出所使用的$A(k)$
+  序列密码系统中密钥序列设计应该考虑如下几个因素:
+  \begin{enumerate}[label={[}\arabic*{]}]
+    \item 系统的安全保密性
+    \item 密钥易于分配、保管、更换;
+    \item 产生密钥序列简单、快速
+  \end{enumerate}
+
+  目前, 密钥序列产生大多数是基于\hl{移位寄存器}.为达到安全保密性要求, 序列密码的密钥序列应该满足\hl{伪随机准则}:
+  \begin{enumerate}[label={[}\arabic*{]}]
+    \item 极大的周期: 现代密码机的数据率为$10^8bit/s$, 如果10年内不使用重复的$\{k_i\}$, 要求$\{k_i\}$的周期$>3\times 10^{16}$或者$2^{55}$.
+    \begin{itemize}
+      \item 周期长, 是为了不至于使得通过两组密文相加的结果和语言冗余度分析就能获得一些关于明文的信息
+    \end{itemize}
+    \item 良好的随即统计特性, 即序列中每位接近均匀分布
+    \begin{itemize}
+      \item 良好的随机特性是为了是密钥序列能很好地掩盖明文, 以抵抗"已知明文攻击"
+    \end{itemize}
+    \item 序列线性不可预测性充分大
+    \begin{itemize}
+      \item 线性不可预测性是为了防止从部分密钥序列通过线性关系简单的推导出整个密钥序列的测度.
+    \end{itemize}
+  \end{enumerate}
+\end{itemize}
+
+\section{群的概念}
+\begin{definition}
+  给定一集合$G=\{a,b,\cdots\}$和该集合上的运算*, 满足下列四个条件的代数系统$<G,*>$称为群:
+\end{definition}
+
+  \begin{itemize}
+    \item 封闭性: 若$a,b\in G$, 则存在$c\in C$, 使得$a*b=c$
+    \item 结合律成立: $a,b,c\in G$, 恒有$(a*b)*c=a*(b*c)$
+    \item 存在单位元素e: 即存在$e\in G$, 对于$\forall a\in G$, 恒有$a*e=e*a=a$
+
+    存在逆元: 对于$a\in G$, 恒有$b\in G$, 使得$a*b=b*a=e$, 元素b称为a的逆元, 用$a^{-1}$来表示, 即$b=a^{-1}$.
+
+    若$\forall a,b\in G$, 有$a*b=b*a$, 则称$<G,*>$为\hl{阿贝尔群}, 为简便起见, 简记作$a*b$为$ab$
+  \end{itemize}
+
+\section{域的概念}
+\begin{definition}
+  F是至少含有两个元素的集合, 对F定义了两种运算"+"和"*", 并且满足以下三个条件的代数系统$<F,+,*>$称为域
+\end{definition}
+  \begin{itemize}
+    \item F的元素关于运算"+"构成阿贝尔群, 设单位元为0
+    \item $F/\{0\}$关于运算"*"构成阿贝尔群.
+    \item 对于$a,b,c\in F$分配律成立. 即
+    $$
+    \begin{aligned}
+      &(a+b)*c=a*c+b*c\\
+      &c*(a+b)=c*a+c*b\\
+    \end{aligned}
+    $$
+
+    若F域的元素有限个, 则称之为\hl{有限域}或者\hl{伽罗瓦域}. $F/\{0\}$表示集合F除去元素$\{0\}$后的元素.
+
+    p是素数, 则$F=\{0,1,2\cdots, p-1\}$在$\bmod p$的意义下关于"+"和"*"运算构成的域用$GF(p)$来表示.
+  \end{itemize}
+
+\section{线性移位寄存器}
+  移位寄存器是序列密码种产生密钥序列的一个主要组成部分. $GF(2)$上n即反馈移位寄存器的表示见下图
+
+  \begin{itemize}
+    \item 标有$a_1,a_2,a_3,\cdots ,a_{n-1}$, $a_n$的小方框表示$(0,1)$二值存储单元, 信号流从左向右. 这n个二值存储单元称为该反馈移位寄存器的\hl{级}.
+    \item 在任意时刻, 者n级的内容构成该反馈移位寄存器的\hl{状态}, 即反馈移位寄存器的状态对应于一个$GF(2)$上的n为向量, 共有$2^n$种可能的情况.
+    \item 每一时刻的状态可用n长序列$a_1,a_2,\cdots a_n$, 或者n维向量$f(a_1, a_2,\cdots, a_n)$表示. 其中$a_i$为当时第i级存储器的内容.
+    \item 在主时钟确定的周期区间上, 每一级存储器$a_i$都将其内容向下一级$a_{i-1}$传递, 并根据存储器当时的状态计算$f(a_1, a_2, \cdots, a_n)$作为$a_n$下一时间的内容.
+    \item 称函数$f(a_1,a_2,\cdots ,a_n)$为\hl{反馈函数}, 它是n元布尔函数, 即n个变元$a_1,a_2,\cdots, a_n$可以独立的取0和1这两个可能的值. 对n个变元$a_1,a_2,\cdots,a_n$作与、或、取反等运算. 最后函数值也为0或1的函数. 这样的反馈函数共有$2^{2^n}$.
+    \item 在时钟脉冲时, 如果反馈移位寄存器的状态为:
+    $$S_t=(a_t, t_{t+1}, \cdots, a_{t+n-1})$$
+    则
+    \begin{equation}
+      a_{t+n}=f(a_t, a_{t+1}, \cdots, a_{t+n-1})
+    \end{equation}
+    $a_{t+n}$是移位寄存器的输入. 在$a_{t+n}$的驱动下, 移位寄存器的各个数据向前推移一位, 使得状态变为
+    \begin{equation}
+      S_{t+1}=(a_{t+1}, a_{t+2}, \cdots, a_{t+n})
+    \end{equation}
+    同时整个移位寄存器的输出为$a_t$, 由此得到一系列数据
+    \begin{equation}
+      a_1, a_2, \cdots, a_n, \cdots
+    \end{equation}
+    满足关系式(1), 称无穷序列(2)为一个\hl{反馈移位寄存器序列}
+  \end{itemize}
+
+  \begin{definition}
+    序列$a_1,a_2,\cdots, a_n, \cdots$成为周期序列, 若存在正整数T使得
+    $$a_{i+T}=a_i, i=1,2,\cdots$$
+    满足(3)式的最小正整数T称为序列${a_i}$的周期.
+  \end{definition}
+
+  若移位寄存器的\hl{反馈函数}$f(a_1, a_2, \cdots, a_n)$是$a_1, a_2, \cdots, a_n$的线性函数, 则称为\hl{线性移位寄存器}, 否则称为\hl{非线性移位寄存器}
+
+  设$f(a_1, a_2, \cdots, a_n)$为线性函数, 则$f$可以写成
+  $$f(a_1, a_2, \cdots, a_n)=C_na_1\oplus C_{n-1}a_2\oplus\cdots \oplus C_1a_n$$
+  其中$C_i=0$或1, $C_1, C_2, \cdots, C_n$为\hl{反馈系数}. 二进制下, $C_1, C_2, \cdots, C_n$的作用相当于一个\hl{开关}, 用断开和闭合表示0和1, 这样的线性函数共$2^n$个.
+
+  输出序列${a_t}$满足
+  $$a_{n+1}=C_na_t\oplus C_{n-1}a_{t+1}\oplus \cdots \oplus C_1a_{n+t-1}$$
+  其中t为非负正整数
+
+  例题: 有一个三级移位寄存器如下图所示
+
+  其中初态为$S_1=(a_1, a_2, a_3)=(1, 0, 1)$
+
+  解:
+  $$
+  \begin{aligned}
+    &S_1=(a_1, a_2, a_3)=(1, 0, 1), \mbox{输出为}a_1=1\\
+    &S_2=(a_2, a_3, a_4)=(0, 1, 1), a_4=a_1a_2\oplus a_3=(1\times 0)\oplus 1=1, \mbox{输出}a_2=0\\
+    &S_3=(a_3, a_4, a_5)=(1, 1, 1), a_5=a_2a_3\oplus a_4=(0\times 1)\oplus 1=1, \mbox{输出}a_3=1\\
+    &S_4=(a_4, a_5, a_6)=(1, 1, 0), a_6=a_3a_4\oplus a_5=(1\times 1)\oplus 1=0, \mbox{输出}a_4=1\\
+    &S_5=(a_5, a_6, a_7)=(1, 0, 1), a_7=a_4a_5\oplus a_6=(1\times 1)\oplus 0=1, \mbox{输出}a_5=1\\
+    &S_6=(a_6, a_7, a_8)=(0, 1, 1), a_8=a_5a_6\oplus a_7=(1\times 0)\oplus 1=1, \mbox{输出}a_6=0\\
+    &S_7=(a_7, a_8, a_9)=(1, 1, 1), a_9=a_6a_7\oplus a_8=(0\times 1)\oplus 1=1, \mbox{输出}a_7=1\\
+  \end{aligned}
+  $$
+
+  如下表所示
+  \begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+      \hline
+      \multicolumn{4}{|c|}{状态$(a_1, a_2, a_3)$} &输出\\
+      \hline
+      $S_1$ &1 &0 &1 &1\\
+      \hline
+      $S_2$ &0 &1 &1 &0\\
+      \hline
+      $S_3$ &1 &1 &1 &1\\
+      \hline
+      $S_4$ &1 &1 &0 &1\\
+      \hline
+      $S_5$ &1 &0 &1 &1\\
+      \hline
+      $S_6$ &0 &1 &1 &0\\
+      \hline
+      $S_7$ &1 &1 &1 &1\\
+      \hline
+      \vdots &\vdots &\vdots &\vdots &\vdots\\
+      \hline
+    \end{tabular}
+  \end{table}
+  所以此移位寄存器输出序列为$101110111011\cdots$, 是周期为4的序列.
+
+  例题: 有一个五级线性移位寄存器
+
+  其中$S_1=(a_1, a_2, a_3, a_4, a_5)=(10011)$
+
+  解:
+  $S_1=(a_1, a_2, a_3, a_4, a_5)=(10011)_2$, 输出为$a_1=1$
+  $S_2=(a_2, a_3, a_4, a_5, a_6)$, 其中$a_6=f(a_1, a_2, a_3, a_4, a_5)$.
+  对于五级线性移位寄存器应有
+  $$f(a_1, a_2, a_3, a_4, a_5)=C_5a_1\oplus C_4a_2\oplus C_3a_3\oplus C_2a_4\oplus C_1a_5$$
+  由给出的图可知
+  $$C_2=C_3=C_5=0, C_1=C_4=1$$
+  即
+  $$
+  \begin{aligned}
+    &f(a_1, a_2, a_3, a_4, a_5)=a_1\oplus a_4\\
+    &a_6=a_1\oplus a_4=1\oplus 1=0, S_2=(a_2, a_3, a_4, a_5, a_6)=(00110), \mbox{输出为}a_2=0\\
+    &S_3=(a_3, a_4, a_5, a_6, a_7)=(01101), a_7=a_2\oplus a_5=0\oplus 1=1, \mbox{输出为}a_3=0\\
+    &S_4=(a_4, a_5, a_6, a_7, a_8)=(11010), a_8=a_3\oplus a_6=0\oplus 0=0, \mbox{输出为}a_4=1\\
+    &S_5=(a_5, a_6, a_7, a_8, a_9)=(10100), a_9=a_4\oplus a_7=1\oplus 1=0, \mbox{输出为}a_5=1\\
+    &S_6=(a_6, a_7, a_8, a_9, a_7)=(01001), a_10=a_5\oplus a_8=1\oplus 0=1, \mbox{输出为}a_6=0\\
+    &S_7=(a_7, a_8, a_9, a_10, a_11)=(10010), a_11=a_6\oplus a_9=0\oplus 0=0, \mbox{输出为}a_7=1\\
+    &S_8=(a_8, a_9, a_10, a_11, a_12)=(00100), a_12=a_7\oplus a_10=1\oplus 1=0, \mbox{输出为}a_8=0\\
+    &S_9=(a_9, a_10, a_11, a_12, a_13)=(01000), a_13=a_8\oplus a_11=0\oplus 0=0, \mbox{输出为}a_9=0\\
+    &\vdots\\
+  \end{aligned}
+  $$
+
+  在线性移位寄存器种总是假定$c_1, c_2, \cdots, c_n$种至少有一个系数不为0. 若只有一个系数不为0, 设仅有$a_j$项非0, 实际上是一种延迟装置, 一般对于n级线性移位寄存器, 总假定$c_n=1$
+
+  线性移位寄存器\hl{输出序列}的性质完全由其\hl{反馈函数决定}
+  \begin{itemize}
+    \item n级线性移位寄存器最多有$2^n$个不同的状态. 若其初始状态为0, 则其状态恒为0; 若其初始状态为非0, 则其后继状态不会为0
+    \item n级线性移位寄存器的状态周期$\le 2^n-1$, 其输出序列的周期=状态周期$\le 2^n-1$;
+    \item 选择合适的反馈函数可是序列的周期达到最大值$2^n-1$, 则称此时的输出序列为\hl{最大长度线性移位寄存器}, 简称\hl{m序列}
+  \end{itemize}
+
+  \section{线性移位寄存器的一元多项式表示}
+  设n级线性移位寄存器的输出序列${a_i}$满足递推关系
+  \begin{equation}
+    a_{k+n}=C_1a_{k+n-1}\oplus C_2a_{k+n-2}\oplus \cdots \oplus C_na_k
+  \end{equation}
+  对于任何$k\ge 1$成立. 这种递推关系可用一个一元n次多项式表示
+  \begin{equation}
+    p(x)=1+C_1x+C_2x^2+\cdots +C_nx^n
+  \end{equation}
+  称(5)式为该线性移位寄存器的\hl{联系多项式}或\hl{特征多项式}
+
+  设n级线性移位寄存器对应于递推关系, 则有$2^n$个递推序列, 其中非恒为0的序列有$2^n-1$个. 令这非零的序列全体为$G[P(x)]$, 对$G[P(x)]$种任一序列$a_j$, 有母函数
+  $$A(x)=\sum\limits_{i=1}^\infty a_i x^{i-1}$$.
+
+  \begin{theorem}
+    设$p(x)1+c_1x+c_2x^2+\cdots +c_nx^n$是$GF(2)$上的多项式, 且递推序列$\{\}a_i\in G[P(x)]$, 令
+    $$A(x)=\sum\limits_{i=1}^\infty a_i x^{i-1}$$
+    则
+    $$A(x)=\frac{\phi(x)}{p(x)}$$
+    其中
+    $$\phi(x)=\sum\limits_{i=1}^n c_{n-i}x^{n-i}\sum\limits_{j=1}^i a_jx^{j-1}$$
+  \end{theorem}
+  根据上述定理, 若序列$\{a_t\}\in G[p_n(x)]$, 其中$p_n(x)$是n级线性移位寄存器的特征多项式, 则母函数为$A(x)=\frac{\phi(x)}{p(x)}$, 其中的次数低于n, 最多为$n-1$次
+  \begin{theorem}
+    $p(x)|q()$的充分必要条件是$G[p(x)]\subset G[q(x)]$.
+  \end{theorem}
+  上述定理说明n级线性移位寄存器产生的序列可用级数更多的的线性移位寄存器来实现.
+
+  \begin{definition}
+    设$p(x)$为$GF(2)$上的n次多项式, 使得$p(x)|x^p-1$的最小p称为$p(x)$的周期或$p(x)$的阶.
+  \end{definition}
+
+  \begin{theorem}
+    设$p(x)$为$GF(2)$上的n次多项式, 且$p(x)$是序列$\{a_i\}$的特征多项式, p为$p(x)$的阶, 则$\{a_i\}$的周期为$r|p$
+  \end{theorem}
+  n级线性移位寄存器输出序列的周期r不依赖于初始条件, 而依赖于特征多项式$p(x)$.
+
+  \begin{theorem}
+    若$p(x)$是n次不可约多项式, 且$p(x)$的阶为m, $\{a_i\}\in G[p(x)]$则序列$\{a_i\}$的周期为m.
+  \end{theorem}
+  上述定理说明了特征多项式满足什么条件, n级线性移位寄存器的输出序列为m序列.
+
+  \begin{theorem}
+    n级线性移位寄存器产生的状态序列最大周期$2^n-1$的必要条件是其特征多项式是不可约的.
+  \end{theorem}
+
+  上述定理不一定成立
+
+  \begin{definition}
+    $p(x)$为n次不可约多项式, 若$p(x)$的阶位$2^n-1$, 称$p(x)$为\hl{n次本原多项式}
+  \end{definition}
+  \begin{theorem}
+    设$\{a_i\}\in G[p(x)]$, 则$\{a_i\}$为m序列的充要条件是$p(x)$为n次本原多项式.
+  \end{theorem}
+
+  \section{m序列的伪随机性}
+  \subsection{随机序列的一般特性}
+  设序列$\{a_i\}=(a_1a_2a_3\cdots)$为序列$0-1$, 称序列种形式为$0\underbrace{11\cdots1}_\text{k个1}0$为一个长为k的1游程, $1\underbrace{00\cdots 0}_\text{k个0}1$的一段为一个长为k的0游程.
+
+  \begin{definition}
+    $GF(2)$上周期为T的序列$\{a_i\}$的自相关函数定义为
+    $$R_\alpha(\tau)=\frac{1}{T}\sum\limits_{k=1}^T(-1)^{a_k}(-1)^{a_{k+\tau}}, 0\le \tau  \le T-1$$
+  \end{definition}
+  \begin{itemize}
+    \item 周期序列$\{a_i\}$的自相关函数表示序列$\{a_i\}$与$\{a_{i+\tau}\}$在一个周期内对应位相同的位数与对应位相异的位数之差的一个\hl{参数($\frac{\mbox{相同位的数目}-\mbox{相异位的数目}}{周期T}$)}.
+    \item 当$\tau =0$, $R_\alpha(\tau)=1$; 当$\tau \neq0$时, $R_\alpha(\tau)$称为\hl{异相自相关函数}. 异相自相关函数是序列随机性的一个指标.
+
+    伪随机周期序列应该满足以下三个随机性公设:
+    \begin{enumerate}[label={[}\arabic*{]}:]
+      \item 在序列的一个周期内, 0与1的个数相差至多为1.
+      \item 在序列的一个周期内, 长为1的游程数占游程总数的$\frac{1}{2}$, 长为2的游程总数占游程总数的$\frac{1}{2^2}$, 长为i的游程数占游程总数的$\frac{1}{2^i}$, 且在等长的游程中0的游程个数和1的游程个数相等.
+      \item 异相自相关函数是一个常数.
+    \end{enumerate}
+    \item 公设[1]说明$0-1$序列中0与1的出现概率"基本"相等.
+    \item 公设[2]说明0与1在n个位置上出现的概率相同.
+    \item 公设[3]说明若将$\{a_i\}$与$\{a_{i+\tau}\}$比较, 无法得到关于$\{a_i\}$的实质性信息.
+  \end{itemize}
+
+  例题7.3 假设破译者得到密文串$101101011110010$和相应的明文串$011001111111001$. 同时假定攻击者也知道密钥流是使用5级线性移位寄存器产生的, 试破译改密码系统.
+  解: 有明文(15位), 密文(15位)对可求出长为15位的密钥序列
+  \begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      $m_i$ &0 &1 &1 &0 &0 &1 &1 &1 &1 &1 &1 &1 &0 &0 &1\\
+      \hline
+      $c_i$ &1 &0 &1 &1 &0 &1 &0 &1 &1 &1 &1 &0 &0 &1 &0\\
+      \hline
+      $k_i=m_i\oplus c$ &1 &1 &0 &1 &0 &0 &1 &0 &0 &0 &0 &1 &0 &1 &1\\
+      \hline
+    \end{tabular}
+  \end{table}
+
+  有开始的$10^i$密钥流比特得到上述矩阵方程
+\end{document}
